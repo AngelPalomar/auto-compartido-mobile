@@ -1,69 +1,52 @@
 import React from "react";
 import {
   Text,
-  Link,
   HStack,
-  Center,
-  Heading,
   Switch,
   useColorMode,
   NativeBaseProvider,
-  extendTheme,
-  VStack,
-  Box,
+  extendTheme
 } from "native-base";
-import NativeBaseIcon from "./components/NativeBaseIcon";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+//Screens
+import IniciarSesion from "./screens/public/IniciarSesion";
+import Registrarse from "./screens/public/Registrarse";
 
 // Define the config
 const config = {
   useSystemColorMode: false,
-  initialColorMode: "dark",
+  initialColorMode: "light",
 };
 
 // extend the theme
 export const theme = extendTheme({ config });
 type MyThemeType = typeof theme;
 declare module "native-base" {
-  interface ICustomTheme extends MyThemeType {}
+  interface ICustomTheme extends MyThemeType { }
 }
+
+//create navigation stack routing
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 export default function App() {
   return (
     <NativeBaseProvider>
-      <Center
-        _dark={{ bg: "blueGray.900" }}
-        _light={{ bg: "blueGray.50" }}
-        px={4}
-        flex={1}
-      >
-        <VStack space={5} alignItems="center">
-          <NativeBaseIcon />
-          <Heading size="lg">Welcome to NativeBase</Heading>
-          <HStack space={2} alignItems="center">
-            <Text>Edit</Text>
-            <Box
-              _web={{
-                _text: {
-                  fontFamily: "monospace",
-                  fontSize: "sm",
-                },
-              }}
-              px={2}
-              py={1}
-              _dark={{ bg: "blueGray.800" }}
-              _light={{ bg: "blueGray.200" }}
-            >
-              App.js
-            </Box>
-            <Text>and save to reload.</Text>
-          </HStack>
-          <Link href="https://docs.nativebase.io" isExternal>
-            <Text color="primary.500" underline fontSize={"xl"}>
-              Learn NativeBase
-            </Text>
-          </Link>
-          <ToggleDarkMode />
-        </VStack>
-      </Center>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="IniciarSesion" component={IniciarSesion} options={{
+            headerShown: false
+          }} />
+          <Stack.Screen name="Registrarse" component={Registrarse} options={{
+            title: 'Crear una cuenta',
+            headerStyle: {
+              backgroundColor: theme.colors.info[900]
+            },
+            headerTintColor: '#FFFFFF'
+          }} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </NativeBaseProvider>
   );
 }
