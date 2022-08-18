@@ -1,4 +1,7 @@
 type RootStackParamList = {
     IniciarSesion: undefined,
-    Registrarse: undefined
+    RegistrarsePasajero: undefined,
+    RegistrarseConductor: undefined,
+    RegistrarVehiculo: undefined
+    RegistrarLicencia: undefined
 };
