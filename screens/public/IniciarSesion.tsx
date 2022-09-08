@@ -28,7 +28,7 @@ const IniciarSesion = (props: Props) => {
                     <Box alignItems={'center'} mb={5}>
                         <Input px={3} mb={3} placeholder={'Correo electrónico'} width={'80%'} keyboardType='email-address' variant={'rounded'} />
                         <Input px={3} mb={3} placeholder={'Contraseña'} width={'80%'} keyboardType='default' secureTextEntry variant={'rounded'} />
-                        <Button colorScheme={'darkBlue'}>
+                        <Button colorScheme={'darkBlue'} onPress={() => props.navigation.navigate('Inicio')}>
                             INGRESAR
                         </Button>
                     </Box>
