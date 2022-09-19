@@ -102,10 +102,13 @@ export default function Registrarse(props: Props) {
 
                 //Manda al inicio
                 props.navigation.navigate('Inicio');
+
+                setIsLoading(false);
             }).catch(e => {
                 toast.show({
                     description: "Error al crear tu usuario, intenta de nuevo. Error: " + e
                 });
+                setIsLoading(false);
             })
     }
 

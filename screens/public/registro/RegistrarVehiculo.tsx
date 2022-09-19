@@ -6,11 +6,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
     Text, Center, VStack, Box, Heading, Input, Button, Icon,
-    Select
+    Select,
+    useToast
 } from 'native-base'
 
 //Iconos
 import { SimpleLineIcons } from '@expo/vector-icons';
+import { minLenghtValidation } from '../../../utils/functions/formValidation';
 
 //nav
 type Props = NativeStackScreenProps<RootStackParamList, 'RegistrarVehiculo'>
@@ -38,7 +40,46 @@ export default function RegistrarVehiculo(props: Props) {
         asientosDisponibles: 0,
         tipoVehiculo: 'automovil'
     });
+    const toast = useToast();
     type input = NativeSyntheticEvent<TextInputChangeEventData>;
+
+    const validarCampos = () => {
+        const cdt = conductor;
+        if (!minLenghtValidation(cdt.modelo.trim(), 3)) {
+            toast.show({
+                description: "Ingrese el modelo de su vehículo."
+            });
+            return;
+        }
+
+        if (!minLenghtValidation(cdt.color.trim(), 3)) {
+            toast.show({
+                description: "Ingrese el color de su vehículo."
+            });
+            return;
+        }
+
+        if (!minLenghtValidation(cdt.numeroPlaca.trim(), 4)) {
+            toast.show({
+                description: "Ingrese el número/código de placa de su vehículo."
+            });
+            return;
+        }
+
+        if (!minLenghtValidation(cdt.asientosDisponibles.toString().trim(), 1)) {
+            toast.show({
+                description: "Ingrese el número de asientos disponibles de tu vehículo."
+            });
+            return;
+        }
+
+        if (!minLenghtValidation(cdt.tipoVehiculo.trim(), 1)) {
+            toast.show({
+                description: "Ingrese el modelo de su vehículo."
+            });
+            return;
+        }
+    }
 
     return (
         <SafeAreaView>
@@ -60,9 +101,10 @@ export default function RegistrarVehiculo(props: Props) {
                             <Input px={3} mb={3} placeholder={'No. de placa'} width={'80%'} keyboardType='default' variant={'rounded'} autoCapitalize={'characters'}
                                 onChange={(e: input): void => setConductor({ ...conductor, numeroPlaca: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Asientos disponibles'} width={'80%'} keyboardType='numeric' variant={'rounded'}
-                                onChange={(e: input): void => setConductor({ ...conductor, asientosDisponibles: e.nativeEvent.text as unknown as number })} />
+                                onChange={(e: input): void => setConductor({ ...conductor, asientosDisponibles: parseInt(e.nativeEvent.text) })} />
                             <Select px={3} mb={3} placeholder={'Tipo de vehículo'} accessibilityLabel={'Tipo de vehículo'} width={'80%'} variant={'rounded'}
                                 onValueChange={(itemValue: string) => setConductor({ ...conductor, tipoVehiculo: itemValue as 'automovil' | 'motocicleta' })}
+                                defaultValue={conductor.tipoVehiculo}
                                 _selectedItem={{
                                     bg: "cyan.500"
                                 }}>
