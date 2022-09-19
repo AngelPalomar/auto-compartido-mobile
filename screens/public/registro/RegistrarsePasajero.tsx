@@ -7,11 +7,11 @@ import {
     TextInputChangeEventData
 } from 'react-native'
 import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, updateCurrentUser } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 
 //DB y I
 import initFirebase from "../../../firebase/init";
-import IUsuario from "../../../interfaces/usuarios.interface";
+import IUsuario from "../../../interfaces/usuario.interface";
 import IAuth from "../../../interfaces/auth.interface";
 import { minLenghtValidation, emailValidation } from '../../../utils/functions/formValidation';
 
@@ -33,11 +33,11 @@ export default function Registrarse(props: Props) {
         matricula: null,
         idAuth: '',
         nombres: '',
+        telefono: '',
         vehiculo: null
     });
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const toast = useToast();
-    const [messageToast, setMessageToast] = useState<string>('');
     type input = NativeSyntheticEvent<TextInputChangeEventData>;
     const db = getFirestore(initFirebase);
     const auth = getAuth(initFirebase);
@@ -57,6 +57,13 @@ export default function Registrarse(props: Props) {
         if (!minLenghtValidation(psj.apellidos, 3)) {
             toast.show({
                 description: "Ingrese sus apellidos."
+            });
+            return;
+        }
+
+        if (!minLenghtValidation(psj.telefono, 10)) {
+            toast.show({
+                description: "Ingrese un número telefónico de 10 dígitos."
             });
             return;
         }
@@ -120,6 +127,8 @@ export default function Registrarse(props: Props) {
                                 onChange={(e: input): void => setPasajero({ ...pasajero, apellidos: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Correo electrónico UTEQ (@uteq.edu.mx)'} width={'80%'} keyboardType='email-address' variant={'rounded'}
                                 onChange={(e: input): void => setAutenticacion({ ...autenticacion, correoElectronico: e.nativeEvent.text })} />
+                            <Input px={3} mb={3} placeholder={'Teléfono celular'} width={'80%'} keyboardType='phone-pad' variant={'rounded'}
+                                onChange={(e: input): void => setPasajero({ ...pasajero, telefono: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Contraseña'} width={'80%'} keyboardType='default' variant={'rounded'} secureTextEntry
                                 onChange={(e: input): void => setAutenticacion({ ...autenticacion, contrasena: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Confirmar contraseña'} width={'80%'} keyboardType='default' variant={'rounded'} secureTextEntry

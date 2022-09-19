@@ -13,6 +13,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 type Props = NativeStackScreenProps<RootStackParamList, 'RegistrarLicencia'>
 
 const RegistrarLicencia = (props: Props) => {
+    console.log(props.route.params);
     return (
         <SafeAreaView>
             <ScrollView>

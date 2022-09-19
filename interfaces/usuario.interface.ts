@@ -1,3 +1,5 @@
+import IVehiculo from "./vehiculo.interface";
+
 export default interface IUsuario {
     activo: boolean,
     apellidos: string,
@@ -6,10 +8,7 @@ export default interface IUsuario {
     idAuth: string,
     matricula: string | null,
     nombres: string,
+    telefono: string,
     rol: 'admin' | 'conductor' | 'pasajero',
-    vehiculo: {
-        color: string,
-        modelo: string,
-        numeroPlaca: string
-    } | null
+    vehiculo: IVehiculo | null
 }

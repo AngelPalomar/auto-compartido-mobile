@@ -1,3 +1,5 @@
+import IPunto from "./punto.interface"
+
 export default interface IRuta {
     activo: boolean,
     descripcion: string,
@@ -8,8 +10,5 @@ export default interface IRuta {
     lugarInicio: string,
     lugaresDisponibles: number,
     pasajeros: Array<string>,
-    puntos: Array<{
-        lugar: string,
-        costo: number
-    }>
+    puntos: Array<IPunto>
 }
