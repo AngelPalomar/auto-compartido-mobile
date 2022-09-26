@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { LogBox } from 'react-native'
 import {
   Text,
   HStack,
@@ -35,6 +36,13 @@ declare module "native-base" {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+  useEffect(() => {
+    LogBox.ignoreLogs([
+      'Setting a timer',
+      'AsyncStorage has been extracted from react-native core'
+    ]);
+  }, []);
+
   return (
     <NativeBaseProvider>
       <NavigationContainer>
@@ -71,11 +79,7 @@ export default function App() {
             headerTintColor: '#FFFFFF'
           }} />
           <Stack.Screen name="Inicio" component={Inicio} options={{
-            title: 'Menú',
-            headerStyle: {
-              backgroundColor: theme.colors.darkBlue[800]
-            },
-            headerTintColor: '#FFFFFF'
+            headerShown: false
           }} />
         </Stack.Navigator>
       </NavigationContainer>

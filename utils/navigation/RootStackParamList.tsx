@@ -25,5 +25,7 @@ type RootStackParamList = {
         asientosDisponibles: number,
         tipoVehiculo: 'automovil' | 'motocicleta'
     },
-    Inicio: undefined
+    Inicio: undefined,
+    MenuPrincipal: undefined,
+    Perfil: undefined
 };
