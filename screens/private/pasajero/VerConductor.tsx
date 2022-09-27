@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Conductor() {
+export default function VerConductor() {
     return (
         <View>
-            <Text>Conductor</Text>
+            <Text>VerConductor</Text>
         </View>
     )
 }

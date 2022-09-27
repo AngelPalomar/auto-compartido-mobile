@@ -26,6 +26,7 @@ type RootStackParamList = {
         tipoVehiculo: 'automovil' | 'motocicleta'
     },
     Inicio: undefined,
-    MenuPrincipal: undefined,
+    PasajeroMenu: undefined,
+    ConductorMenu: undefined,
     Perfil: undefined
 };

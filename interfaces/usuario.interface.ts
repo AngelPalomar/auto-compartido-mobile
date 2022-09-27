@@ -1,6 +1,7 @@
 import IVehiculo from "./vehiculo.interface";
 
 export default interface IUsuario {
+    idDoc?: string,
     activo: boolean,
     apellidos: string,
     asegurado: boolean,

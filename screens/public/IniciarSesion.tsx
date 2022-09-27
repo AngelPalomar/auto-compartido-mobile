@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Text, Center, VStack, Box, Heading, Input, Button, useToast } from 'native-base'
+import {
+    Text, Center, VStack, Box, Heading, Input, Button, useToast, InputRightAddon, InputGroup,
+    Stack
+} from 'native-base'
 import { ScrollView, Image, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 import initFirebase from '../../firebase/init';
-import { emailValidation } from '../../utils/functions/formValidation';
+import { minLenghtValidation } from '../../utils/functions/formValidation';
 import { FirebaseError } from 'firebase/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'IniciarSesion'>
@@ -21,7 +24,7 @@ const IniciarSesion = (props: Props) => {
     type input = NativeSyntheticEvent<TextInputChangeEventData>;
 
     const iniciarSesion = () => {
-        if (!emailValidation(correoElectronico)) {
+        if (!minLenghtValidation(correoElectronico.trim(), 3)) {
             toast.show({
                 description: "Ingrese un correo electrónico UTEQ (ejemplo@uteq.edu.mx)"
             });
@@ -31,7 +34,7 @@ const IniciarSesion = (props: Props) => {
         //Iniciar carga
         setIsLoading(true);
 
-        signInWithEmailAndPassword(auth, correoElectronico.trim(), contrasena.trim())
+        signInWithEmailAndPassword(auth, `${correoElectronico.trim()}@uteq.edu.mx`, contrasena.trim())
             .then((userCredential) => {
                 toast.show({
                     description: "Bienvenido " + userCredential.user.email
@@ -67,8 +70,20 @@ const IniciarSesion = (props: Props) => {
                     </Heading>
                     <Heading size={'sm'} color={'darkBlue.800'}>Iniciar sesión</Heading>
                     <Box alignItems={'center'} mb={5}>
-                        <Input px={3} mb={3} placeholder={'Correo electrónico'} width={'80%'} keyboardType='email-address' variant={'rounded'}
-                            onChange={(e: input) => { setCorreoElectronico(e.nativeEvent.text) }} />
+                        <Stack alignItems="center" px={3} mb={3}>
+                            <InputGroup w={{
+                                base: "80%",
+                                md: "285"
+                            }}>
+                                <Input w={{
+                                    base: "70%",
+                                    md: "100%"
+                                }} placeholder="nombre.apellido / matrícula"
+                                    variant={'rounded'}
+                                    onChange={(e: input) => { setCorreoElectronico(e.nativeEvent.text) }} />
+                                <InputRightAddon children={"@uteq.edu.mx"} />
+                            </InputGroup>
+                        </Stack>
                         <Input px={3} mb={3} placeholder={'Contraseña'} width={'80%'} keyboardType='default' secureTextEntry variant={'rounded'}
                             onChange={(e: input) => { setContrasena(e.nativeEvent.text) }} />
                         <Button colorScheme={'darkBlue'} onPress={iniciarSesion} isLoading={isLoading}>
@@ -95,7 +110,7 @@ const IniciarSesion = (props: Props) => {
                     </Box>
                 </VStack>
             </Center>
-        </ScrollView>
+        </ScrollView >
     )
 }
 
