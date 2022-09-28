@@ -27,6 +27,10 @@ type RootStackParamList = {
     },
     Inicio: undefined,
     PasajeroMenu: undefined,
+    VerConductor: {
+        idDoc: string | undefined
+    },
     ConductorMenu: undefined,
+    Viajes: undefined,
     Perfil: undefined
 };

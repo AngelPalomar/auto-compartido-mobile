@@ -14,7 +14,7 @@ export default function ConductorCard({ conductor }: ConductorCardProps) {
             </Box>
             <Box>
                 <VStack>
-                    <Text color={'cyan.500'} fontSize={'lg'}>
+                    <Text fontSize={'lg'}>
                         {`${conductor.nombres.trim()} ${conductor.apellidos.trim()}`}
                     </Text>
                     <Text color={'gray.500'} fontSize={'xs'}>

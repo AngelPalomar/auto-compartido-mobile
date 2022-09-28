@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View, Text, Center, VStack, Heading, Box, Input, Button, useToast } from 'native-base'
+import { View, Text, Center, VStack, Heading, Box, Input, Button, useToast, Stack, InputGroup, InputRightAddon } from 'native-base'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
     ScrollView, Image, NativeSyntheticEvent,
@@ -13,7 +13,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import initFirebase from "../../../firebase/init";
 import IUsuario from "../../../interfaces/usuario.interface";
 import IAuth from "../../../interfaces/auth.interface";
-import { minLenghtValidation, emailValidation } from '../../../utils/functions/formValidation';
+import { minLenghtValidation } from '../../../utils/functions/formValidation';
 
 //Nav
 type Props = NativeStackScreenProps<RootStackParamList, 'RegistrarsePasajero'>
@@ -68,7 +68,7 @@ export default function Registrarse(props: Props) {
             return;
         }
 
-        if (!emailValidation(usr.correoElectronico)) {
+        if (!minLenghtValidation(usr.correoElectronico, 3)) {
             toast.show({
                 description: "Ingrese un correo válido (ejemplo@uteq.edu.mx)."
             });
@@ -93,7 +93,7 @@ export default function Registrarse(props: Props) {
         setIsLoading(true);
 
         //Crea el usuario
-        createUserWithEmailAndPassword(auth, usr.correoElectronico.trim(), usr.contrasena.trim())
+        createUserWithEmailAndPassword(auth, `${usr.correoElectronico.trim()}@uteq.edu.mx`, usr.contrasena.trim())
             .then(async (userCredential) => {
                 psj.idAuth = userCredential.user.uid
 
@@ -128,8 +128,20 @@ export default function Registrarse(props: Props) {
                                 onChange={(e: input): void => setPasajero({ ...pasajero, nombres: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Apellidos'} width={'80%'} keyboardType='default' variant={'rounded'}
                                 onChange={(e: input): void => setPasajero({ ...pasajero, apellidos: e.nativeEvent.text })} />
-                            <Input px={3} mb={3} placeholder={'Correo electrónico UTEQ (@uteq.edu.mx)'} width={'80%'} keyboardType='email-address' variant={'rounded'}
-                                onChange={(e: input): void => setAutenticacion({ ...autenticacion, correoElectronico: e.nativeEvent.text })} />
+                            <Stack alignItems="center" px={3} mb={3}>
+                                <InputGroup w={{
+                                    base: "80%",
+                                    md: "285"
+                                }}>
+                                    <Input w={{
+                                        base: "70%",
+                                        md: "100%"
+                                    }} placeholder="nombre.apellido / matrícula"
+                                        variant={'rounded'}
+                                        onChange={(e: input) => { setAutenticacion({ ...autenticacion, correoElectronico: e.nativeEvent.text }) }} />
+                                    <InputRightAddon children={"@uteq.edu.mx"} />
+                                </InputGroup>
+                            </Stack>
                             <Input px={3} mb={3} placeholder={'Teléfono celular'} width={'80%'} keyboardType='phone-pad' variant={'rounded'}
                                 onChange={(e: input): void => setPasajero({ ...pasajero, telefono: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Contraseña'} width={'80%'} keyboardType='default' variant={'rounded'} secureTextEntry

@@ -107,7 +107,7 @@ const RegistrarLicencia = (props: Props) => {
         //Crea la cuenta en auth
         createUserWithEmailAndPassword(
             auth,
-            ath.correoElectronico,
+            `${ath.correoElectronico}@uteq.edu.mx`,
             ath.contrasena).then(createdUser => {
                 //Sube la foto de la licencia al firestorage
                 const storageRef = ref(storage, `licencias/${createdUser.user.uid}`);

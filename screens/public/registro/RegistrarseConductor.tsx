@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView, Image, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Text, Center, VStack, Box, Heading, Input, Button, Icon, useToast } from 'native-base'
+import { Text, Center, VStack, Box, Heading, Input, Button, Icon, useToast, Stack, InputGroup, InputRightAddon } from 'native-base'
 
 //Iconos
 import { SimpleLineIcons } from '@expo/vector-icons';
 
 //Form
-import { emailValidation, minLenghtValidation } from '../../../utils/functions/formValidation';
+import { minLenghtValidation } from '../../../utils/functions/formValidation';
 
 //Nav
 type Props = NativeStackScreenProps<RootStackParamList, 'RegistrarseConductor'>
@@ -53,7 +53,7 @@ export default function RegistrarseConductor(props: Props) {
             return;
         }
 
-        if (!emailValidation(cdt.correoElectronico.trim())) {
+        if (!minLenghtValidation(cdt.correoElectronico.trim(), 3)) {
             toast.show({
                 description: "Ingrese un correo electrónico UTEQ (ejemplo@uteq.edu.mx)"
             });
@@ -102,8 +102,20 @@ export default function RegistrarseConductor(props: Props) {
                                 onChange={(e: input): void => setConductor({ ...conductor, nombres: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Apellidos'} width={'80%'} keyboardType='default' variant={'rounded'}
                                 onChange={(e: input): void => setConductor({ ...conductor, apellidos: e.nativeEvent.text })} />
-                            <Input px={3} mb={3} placeholder={'Correo electrónico UTEQ (uteq.edu.mx)'} width={'80%'} keyboardType='email-address' variant={'rounded'}
-                                onChange={(e: input): void => setConductor({ ...conductor, correoElectronico: e.nativeEvent.text })} />
+                            <Stack alignItems="center" px={3} mb={3}>
+                                <InputGroup w={{
+                                    base: "80%",
+                                    md: "285"
+                                }}>
+                                    <Input w={{
+                                        base: "70%",
+                                        md: "100%"
+                                    }} placeholder="nombre.apellido / matrícula"
+                                        variant={'rounded'}
+                                        onChange={(e: input) => { setConductor({ ...conductor, correoElectronico: e.nativeEvent.text }) }} />
+                                    <InputRightAddon children={"@uteq.edu.mx"} />
+                                </InputGroup>
+                            </Stack>
                             <Input px={3} mb={3} placeholder={'Teléfono celular'} width={'80%'} keyboardType='phone-pad' variant={'rounded'}
                                 onChange={(e: input): void => setConductor({ ...conductor, telefono: e.nativeEvent.text })} />
                             <Input px={3} mb={3} placeholder={'Contraseña'} width={'80%'} keyboardType='default' variant={'rounded'} secureTextEntry
