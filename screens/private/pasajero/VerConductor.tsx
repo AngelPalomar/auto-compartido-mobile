@@ -1,20 +1,34 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import { Avatar, Center, Heading, ScrollView, Spinner, VStack, Text, Box, Stack, Button } from 'native-base';
+import { doc, getDoc, getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import {
+    Avatar, Center, Heading, ScrollView, Spinner, VStack, Text, Box, Stack,
+    Button,
+    useToast
+} from 'native-base';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
 import IUsuario from '../../../interfaces/usuario.interface';
 import initFirebase from '../../../firebase/init';
 import Alerta from '../../../components/alerta/Alerta';
+import ISolicitud from '../../../interfaces/solicitud.interface';
+import { getAuth } from 'firebase/auth';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VerConductor'>;
 
 export default function VerConductor(props: Props) {
     const { params } = props.route;
     const db = getFirestore(initFirebase);
+    const auth = getAuth(initFirebase);
     const docRef = doc(db, "usuarios", params.idDoc as string);
     const [conductor, setConductor] = useState<Partial<IUsuario>>({});
+
+    const pasajeroRef = collection(db, "usuarios");
+    const q = query(pasajeroRef, where("idAuth", "==", auth.currentUser?.uid));
+    const [pasajero, setPasajero] = useState<Partial<IUsuario>>({});
+
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isRequesting, setIsRequesting] = useState<boolean>(false);
+    const toast = useToast();
 
     useEffect(() => {
         getConductorDoc();
@@ -25,12 +39,44 @@ export default function VerConductor(props: Props) {
         docSnap.then(doc => {
             if (doc.exists()) {
                 setConductor(doc.data());
-                setIsLoading(false);
+
+                //Obtiene el pasajero
+                getDocs(q).then(querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        setPasajero(doc.data() as IUsuario);
+                        setIsLoading(false);
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    setIsLoading(false);
+                })
+
             } else {
                 console.error("No such document!");
                 setIsLoading(false);
             }
         })
+    }
+
+    const solicitarViaje = () => {
+        setIsRequesting(true);
+        const solicitud: ISolicitud = {
+            idAuthConductor: conductor.idAuth as string,
+            pasajero: {
+                nombres: pasajero.nombres,
+                apellidos: pasajero.apellidos,
+                telefono: pasajero.telefono
+            },
+            fechaHora: new Date().toDateString(),
+            status: 'pendiente'
+        }
+
+        addDoc(collection(db, 'solicitudes'), solicitud).then(() => {
+            toast.show({
+                description: "Viaje solicitado."
+            })
+            setIsRequesting(false);
+        });
     }
 
     if (isLoading) {
@@ -56,7 +102,7 @@ export default function VerConductor(props: Props) {
                             Teléfono: {conductor.telefono}
                         </Text>
                     </Center>
-                    <Button colorScheme={'cyan'} width={'48'}>
+                    <Button colorScheme={'cyan'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
                         SOLICITAR VIAJE
                     </Button>
                     <Box my={5}>

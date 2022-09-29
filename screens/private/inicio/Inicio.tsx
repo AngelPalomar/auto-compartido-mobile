@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { theme } from 'native-base';
+import React, { useState, useEffect, ReactNode } from 'react';
+import { Icon, theme } from 'native-base';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Center, Spinner } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -13,6 +13,8 @@ import PasajeroMenu from '../pasajero/PasajeroMenu';
 import Perfil from '../perfil/Perfil';
 import ConductorMenu from '../conductor/ConductorMenu';
 import Viajes from '../viajes/Viajes';
+
+import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -59,7 +61,10 @@ const Inicio = () => {
                         headerStyle: {
                             backgroundColor: theme.colors.cyan[500]
                         },
-                        headerTintColor: '#FFFFFF'
+                        headerTintColor: '#FFFFFF',
+                        tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
+                            <AntDesign name='home' size={24} color={theme.colors.blue[500]} />
+                        )
                     }} />
                     : usuario.rol === 'pasajero' ?
                         <Tab.Screen name='PasajeroMenu' component={PasajeroMenu} options={{
@@ -67,7 +72,10 @@ const Inicio = () => {
                             headerStyle: {
                                 backgroundColor: theme.colors.darkBlue[800]
                             },
-                            headerTintColor: '#FFFFFF'
+                            headerTintColor: '#FFFFFF',
+                            tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
+                                <AntDesign name='home' size={24} color={theme.colors.blue[500]} />
+                            )
                         }} /> : null
             }
             <Tab.Screen name='Viajes' component={Viajes} options={{
@@ -75,14 +83,20 @@ const Inicio = () => {
                 headerStyle: {
                     backgroundColor: theme.colors.darkBlue[500]
                 },
-                headerTintColor: '#FFFFFF'
+                headerTintColor: '#FFFFFF',
+                tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
+                    <AntDesign name='car' size={24} color={theme.colors.blue[500]} />
+                )
             }} />
             <Tab.Screen name='Perfil' component={Perfil} options={{
                 title: 'Mi perfil',
                 headerStyle: {
                     backgroundColor: theme.colors.darkBlue[500]
                 },
-                headerTintColor: '#FFFFFF'
+                headerTintColor: '#FFFFFF',
+                tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
+                    <AntDesign name='user' size={24} color={theme.colors.blue[500]} />
+                )
             }} />
         </Tab.Navigator>
     )

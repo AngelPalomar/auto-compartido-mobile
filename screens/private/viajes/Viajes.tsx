@@ -1,10 +1,12 @@
-import { View, Text } from 'react-native'
+import { Heading, ScrollView, VStack } from 'native-base'
 import React from 'react'
 
 export default function Viajes() {
     return (
-        <View>
-            <Text>Viajes</Text>
-        </View>
+        <ScrollView>
+            <VStack mx={4} my={2}>
+                <Heading>Viajes</Heading>
+            </VStack>
+        </ScrollView>
     )
 }
