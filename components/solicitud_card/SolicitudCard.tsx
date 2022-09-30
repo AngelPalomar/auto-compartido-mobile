@@ -15,10 +15,16 @@ export default function SolicitudCard({ solicitud }: SolicitudCardProps) {
             </Box>
             <Box>
                 <VStack>
-                    <Text fontSize={'lg'}>
+                    <Text fontSize={'lg'} color={'darkBlue.700'}>
                         {`${solicitud.pasajero.nombres?.trim()} ${solicitud.pasajero.apellidos?.trim()}`}
                     </Text>
-                    <HStack>
+                    <Text>
+                        Quiere unirse a tu ruta.
+                    </Text>
+                    <Text fontSize={'sm'} color={'gray.500'} mb={4}>
+                        {solicitud.fechaHora}
+                    </Text>
+                    <HStack justifyContent={'flex-end'} w={{ base: '92%' }}>
                         <Button variant={'link'} colorScheme={'emerald'}
                             leftIcon={<Icon as={<SimpleLineIcons name='check' />} />}>
                             Aceptar

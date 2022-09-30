@@ -5,15 +5,24 @@ import {
     Button,
     Icon,
     IconButton,
-    Center
+    Center,
+    useToast
 } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import IRuta from '../../../interfaces/ruta.interface';
 import IPunto from '../../../interfaces/punto.interface';
 import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import { minLenghtValidation } from '../../../utils/functions/formValidation';
+import initFirebase from '../../../firebase/init';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, addDoc, collection } from 'firebase/firestore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+type Props = NativeStackScreenProps<RootStackParamList, 'CrearRuta'>;
 
-export default function CrearRuta() {
+export default function CrearRuta(props: Props) {
+    const db = getFirestore(initFirebase);
+    const auth = getAuth(initFirebase);
     const [horas, setHoras] = useState<Array<string>>([]);
     const [minutos, setMinutos] = useState<Array<string>>([]);
     const [horaSeleccionada, setHoraSeleccionada] = useState<string>("");
@@ -22,6 +31,8 @@ export default function CrearRuta() {
     const [costo, setCosto] = useState<string>("");
     const [ruta, setRuta] = useState<Partial<IRuta>>({});
     const [puntos, setPuntos] = useState<Array<IPunto>>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const toast = useToast();
     type input = NativeSyntheticEvent<TextInputChangeEventData>;
 
     useEffect(() => {
@@ -64,23 +75,79 @@ export default function CrearRuta() {
         setPuntos(puntos.filter(item => item.lugar !== lugar));
     }
 
+    const crearRuta = () => {
+        //Validaciones
+        if (!minLenghtValidation(ruta.lugarInicio as string, 1)) {
+            toast.show({ description: "Ingrese un lugar de inicio." });
+            return;
+        }
+
+        if (!minLenghtValidation(ruta.lugarDestino as string, 1)) {
+            toast.show({ description: "Ingrese un lugar de destino." });
+            return;
+        }
+
+        if (!minLenghtValidation(ruta.descripcion as string, 1)) {
+            toast.show({ description: "Ingrese una descripción de la ruta." });
+            return;
+        }
+
+        if (!minLenghtValidation(horaSeleccionada, 2)) {
+            toast.show({ description: "Seleccione hora de salida." });
+            return;
+        }
+
+        if (!minLenghtValidation(minutoSeleccionado, 2)) {
+            toast.show({ description: "Seleccione hora de salida." });
+            return;
+        }
+
+        //Armado de documento
+        const rut: Partial<IRuta> = {
+            lugarInicio: ruta.lugarInicio,
+            lugarDestino: ruta.lugarDestino,
+            activo: false,
+            descripcion: ruta.descripcion,
+            estado: 'creado',
+            horaSalida: `${horaSeleccionada}:${minutoSeleccionado}`,
+            idAuthConductor: auth.currentUser?.uid,
+            pasajeros: [],
+            puntos: puntos
+        };
+
+        //Inicia carga
+        setIsLoading(true);
+
+        addDoc(collection(db, 'rutas'), rut).then(() => {
+            toast.show({ description: "Ruta creada." });
+            props.navigation.goBack();
+        }).catch((err) => {
+            toast.show({ description: "Ocurrió un error. Inténtelo de nuevo." });
+        });
+    }
+
     return (
         <ScrollView>
             <VStack my={1} px={4}>
                 <Box my={4} bg={'white'} p={8} rounded="sm" shadow={'4'}>
                     <Heading size={'sm'} mb={2} color={'gray.500'}>Información de la ruta</Heading>
-                    <Input placeholder='Lugar de inicio' variant={'rounded'} mb={4} />
-                    <Input placeholder='Lugar de destino' variant={'rounded'} mb={4} />
-                    <TextArea placeholder='Descripción' variant={'filled'} mb={4} />
+                    <Input placeholder='Lugar de inicio' variant={'rounded'} mb={4}
+                        onChange={(e: input) => setRuta({ ...ruta, lugarInicio: e.nativeEvent.text })} />
+                    <Input placeholder='Lugar de destino' variant={'rounded'} mb={4}
+                        onChange={(e: input) => setRuta({ ...ruta, lugarDestino: e.nativeEvent.text })} />
+                    <TextArea placeholder='Descripción' variant={'filled'} mb={4}
+                        onChange={(e: input) => setRuta({ ...ruta, descripcion: e.nativeEvent.text })} />
                     <Heading size={'sm'} mb={2} color={'gray.500'}>Hora de salida</Heading>
                     <HStack space={5} justifyContent='center' alignItems={'center'} mb={12}>
-                        <Select placeholder='00' minWidth={'1/3'}>
+                        <Select placeholder='00' minWidth={'1/3'}
+                            onValueChange={(itemValue: string) => setHoraSeleccionada(itemValue)}>
                             {horas.map((value: string, index: number) => (
                                 <Select.Item key={index} value={value} label={value} />
                             ))}
                         </Select>
                         <Text fontSize={'lg'}>:</Text>
-                        <Select placeholder='00' minWidth={'1/3'}>
+                        <Select placeholder='00' minWidth={'1/3'}
+                            onValueChange={(itemValue: string) => setMinutoSeleccionado(itemValue)}>
                             {minutos.map((value: string, index: number) => (
                                 <Select.Item key={index} value={value} label={value} />
                             ))}
@@ -97,7 +164,8 @@ export default function CrearRuta() {
                             onChange={(e: input) => setCosto(e.nativeEvent.text)} />
                         <Button colorScheme={'blue'}
                             leftIcon={<Icon as={<AntDesign name='plus' />} />}
-                            onPress={anadirPunto}>
+                            onPress={anadirPunto}
+                            variant={'link'}>
                             Agregar
                         </Button>
                     </HStack>
@@ -117,7 +185,10 @@ export default function CrearRuta() {
                     <Center>
                         <Button colorScheme={'emerald'}
                             isDisabled={puntos.length === 0 ? true : false}
-                            leftIcon={<Icon as={<AntDesign name='check' />} />}>
+                            leftIcon={<Icon as={<AntDesign name='check' />} />}
+                            isLoading={isLoading}
+                            onPress={crearRuta}
+                            variant={'link'}>
                             AGREGAR RUTA
                         </Button>
                     </Center>

@@ -1,4 +1,4 @@
-import { ScrollView, VStack, Heading, Box } from 'native-base';
+import { ScrollView, VStack, Heading, Box, Text } from 'native-base';
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 
@@ -38,11 +38,15 @@ export default function ConductorMenu(props: Props) {
         <ScrollView>
             <VStack mx={4} my={2}>
                 <Heading>Solicitudes</Heading>
+                <Text>
+                    Se muestra una lista con las solicitudes de pasajeros que les
+                    interesa tu ruta.
+                </Text>
                 <Box mt={4}>
                     {
                         solicitudes.map((value: ISolicitud, index: number) => (
                             <Box key={index} mb={4}>
-                                <Box backgroundColor={'white'} p={4} borderRadius={10}>
+                                <Box backgroundColor={'white'} p={4} borderRadius={10} shadow={'4'}>
                                     <SolicitudCard solicitud={value} />
                                 </Box>
                             </Box>

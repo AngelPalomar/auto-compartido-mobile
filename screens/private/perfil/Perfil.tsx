@@ -10,6 +10,7 @@ import IUsuario from '../../../interfaces/usuario.interface';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AntDesign } from '@expo/vector-icons';
+import IRuta from '../../../interfaces/ruta.interface';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Perfil'>;
 
@@ -17,8 +18,11 @@ export default function Perfil(props: Props) {
     const db = getFirestore(initFirebase);
     const auth = getAuth(initFirebase);
     const usuariosRef = collection(db, "usuarios");
-    const q = query(usuariosRef, where("idAuth", "==", auth.currentUser?.uid));
+    const rutasRef = collection(db, 'rutas');
+    const qUsuario = query(usuariosRef, where("idAuth", "==", auth.currentUser?.uid));
+    const qRuta = query(rutasRef, where("idAuthConductor", "==", auth.currentUser?.email));
     const [usuario, setUsuario] = useState<Partial<IUsuario>>({});
+    const [rutas, setRutas] = useState<Array<IRuta>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const toast = useToast();
 
@@ -28,10 +32,26 @@ export default function Perfil(props: Props) {
 
 
     const getUsuarioDoc = () => {
-        getDocs(q).then(querySnapshot => {
+        getDocs(qUsuario).then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                setUsuario(doc.data() as IUsuario);
-                setIsLoading(false);
+                const dataUsuario: IUsuario = doc.data() as IUsuario;
+                setUsuario(dataUsuario);
+
+                //Trae las rutas
+                if (dataUsuario.rol === 'conductor') {
+                    getDocs(qRuta).then(querySnapshot => {
+                        let rts: IRuta[] = [];
+
+                        querySnapshot.forEach(doc => {
+                            rts.push(doc.data() as IRuta);
+                        })
+
+                        setRutas(rts);
+                        setIsLoading(false);
+                    })
+                } else {
+                    setIsLoading(false);
+                }
             })
         }).catch(err => {
             console.error(err);
@@ -66,7 +86,7 @@ export default function Perfil(props: Props) {
 
     return (
         <ScrollView>
-            <Box bg={'white'} m={4} p={8} rounded='sm' shadow={'4'}>
+            <Box bg={'white'} mt={4} mx={4} p={8} rounded='sm' shadow={'4'}>
                 <VStack>
                     <Center>
                         <Avatar size={'xl'} mb={2} />
@@ -76,12 +96,14 @@ export default function Perfil(props: Props) {
                         <Text color={'gray.500'}>{auth.currentUser?.email}</Text>
                         <HStack space={3}>
                             <Button colorScheme={'blue'} my={2}
-                                leftIcon={<Icon as={<AntDesign name='edit' />} />}>
+                                leftIcon={<Icon as={<AntDesign name='edit' />} />}
+                                variant={'link'}>
                                 EDITAR PERFIL
                             </Button>
                             {
                                 usuario.rol === 'conductor' && (
                                     <Button colorScheme={'cyan'} my={2}
+                                        variant={'link'}
                                         leftIcon={<Icon as={<AntDesign name='plus' />} />}
                                         onPress={() => props.navigation.navigate('CrearRuta')}>
                                         AGREGAR RUTA
@@ -91,15 +113,17 @@ export default function Perfil(props: Props) {
                         </HStack>
                     </Center>
                     <Box my={4}>
-                        <Heading>Información</Heading>
+                        <Heading fontWeight={'light'} color={'gray.500'}>
+                            Información
+                        </Heading>
                         <Box my={2}>
-                            <Heading size={'md'} fontWeight={'light'}>
+                            <Heading size={'sm'} fontWeight={'light'}>
                                 Número telefónico
                             </Heading>
                             <Text color={'gray.500'}>{usuario.telefono}</Text>
                         </Box>
                         <Box my={2}>
-                            <Heading size={'md'} fontWeight={'light'}>
+                            <Heading size={'sm'} fontWeight={'light'}>
                                 Matrícula UTEQ
                             </Heading>
                             <Text color={'gray.500'}>{usuario.matricula ? usuario.matricula : 'No hay matrícula'}</Text>
@@ -113,6 +137,12 @@ export default function Perfil(props: Props) {
                         </Box>
                     </Box>
                 </VStack>
+            </Box>
+            <Box bg={'white'} m={4} p={8} rounded='sm' shadow={'4'}>
+                <Heading fontWeight={'light'}>Mis rutas</Heading>
+                <Text>
+                    Selecciona una ruta para activarla
+                </Text>
             </Box>
         </ScrollView>
     )
