@@ -19,6 +19,7 @@ import RegistrarVehiculo from "./screens/public/registro/RegistrarVehiculo";
 import RegistrarLicencia from "./screens/public/registro/RegistrarLicencia";
 import Inicio from "./screens/private/inicio/Inicio";
 import VerConductor from "./screens/private/pasajero/VerConductor";
+import CrearRuta from "./screens/private/conductor/CrearRuta";
 
 // Define the config
 const config = {
@@ -84,6 +85,13 @@ export default function App() {
           }} />
           <Stack.Screen name="VerConductor" component={VerConductor} options={{
             title: '',
+            headerStyle: {
+              backgroundColor: theme.colors.cyan[500]
+            },
+            headerTintColor: '#FFFFFF'
+          }} />
+          <Stack.Screen name="CrearRuta" component={CrearRuta} options={{
+            title: 'Crear una nueva ruta',
             headerStyle: {
               backgroundColor: theme.colors.cyan[500]
             },

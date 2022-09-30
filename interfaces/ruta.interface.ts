@@ -3,9 +3,9 @@ import IPunto from "./punto.interface"
 export default interface IRuta {
     activo: boolean,
     descripcion: string,
-    estado: 'preparacion' | 'curso' | 'terminado'
+    estado: 'creado' | 'preparacion' | 'curso' | 'terminado'
     horaSalida: string,
-    idUsuario: string,
+    idAuthConductor: string,
     lugarDestino: string,
     lugarInicio: string,
     lugaresDisponibles: number,

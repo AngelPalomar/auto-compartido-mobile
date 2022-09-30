@@ -31,6 +31,7 @@ type RootStackParamList = {
         idDoc: string | undefined
     },
     ConductorMenu: undefined,
+    CrearRuta: undefined,
     Viajes: undefined,
     Perfil: undefined
 };
