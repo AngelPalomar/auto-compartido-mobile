@@ -35,25 +35,27 @@ export default function ConductorMenu(props: Props) {
     }
 
     return (
-        <ScrollView>
-            <VStack mx={4} my={2}>
-                <Heading>Solicitudes</Heading>
-                <Text>
-                    Se muestra una lista con las solicitudes de pasajeros que les
-                    interesa tu ruta.
-                </Text>
-                <Box mt={4}>
-                    {
-                        solicitudes.map((value: ISolicitud, index: number) => (
-                            <Box key={index} mb={4}>
-                                <Box backgroundColor={'white'} p={4} borderRadius={10} shadow={'4'}>
-                                    <SolicitudCard solicitud={value} />
+        <Box flex={1} bg={'white'}>
+            <ScrollView>
+                <VStack mx={4} my={2}>
+                    <Heading>Solicitudes</Heading>
+                    <Text>
+                        Se muestra una lista con las solicitudes de pasajeros que les
+                        interesa tu ruta.
+                    </Text>
+                    <Box mt={4}>
+                        {
+                            solicitudes.map((value: ISolicitud, index: number) => (
+                                <Box key={index} mb={4}>
+                                    <Box backgroundColor={'white'} p={4} borderRadius={10} shadow={'4'}>
+                                        <SolicitudCard solicitud={value} />
+                                    </Box>
                                 </Box>
-                            </Box>
-                        ))
-                    }
-                </Box>
-            </VStack>
-        </ScrollView>
+                            ))
+                        }
+                    </Box>
+                </VStack>
+            </ScrollView>
+        </Box>
     )
 }

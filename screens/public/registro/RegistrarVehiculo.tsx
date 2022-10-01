@@ -82,15 +82,15 @@ export default function RegistrarVehiculo(props: Props) {
     }
 
     return (
-        <SafeAreaView>
+        <Box flex={1} bg={'white'}>
             <ScrollView>
-                <Center>
+                <Center mb={10} mt={6}>
                     <VStack space={5} alignItems="center">
                         <Box>
                             <Heading textAlign={'center'}>
                                 Ser conductor UTEQ
                             </Heading>
-                            <Text alignItems="center" color={'cyan.800'}>Todos los campo son requeridos.</Text>
+                            <Text alignItems="center" color={'lightBlue.800'}>Todos los campo son requeridos.</Text>
                         </Box>
                         <Box alignItems={'center'}>
                             <Text mb={2}>Datos de tu vehículo</Text>
@@ -106,12 +106,12 @@ export default function RegistrarVehiculo(props: Props) {
                                 onValueChange={(itemValue: string) => setConductor({ ...conductor, tipoVehiculo: itemValue as 'automovil' | 'motocicleta' })}
                                 defaultValue={conductor.tipoVehiculo}
                                 _selectedItem={{
-                                    bg: "cyan.500"
+                                    bg: "lightBlue.500"
                                 }}>
                                 <Select.Item label='Automóvil' value='automovil' />
                                 <Select.Item label='Motocicleta' value='motocicleta' />
                             </Select>
-                            <Button colorScheme={'cyan'} rightIcon={<Icon as={<SimpleLineIcons />} name={'arrow-right'} color={'white'} />}
+                            <Button colorScheme={'lightBlue'} rightIcon={<Icon as={<SimpleLineIcons />} name={'arrow-right'} color={'white'} />}
                                 onPress={() => props.navigation.navigate('RegistrarLicencia', conductor)}>
                                 SIGUIENTE
                             </Button>
@@ -119,6 +119,6 @@ export default function RegistrarVehiculo(props: Props) {
                     </VStack>
                 </Center>
             </ScrollView>
-        </SafeAreaView>
+        </Box>
     )
 }

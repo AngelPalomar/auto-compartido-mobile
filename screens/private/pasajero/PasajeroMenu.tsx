@@ -1,4 +1,4 @@
-import { ScrollView, VStack, Heading, Box } from 'native-base';
+import { ScrollView, VStack, Heading, Box, Text } from 'native-base';
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 
@@ -35,26 +35,31 @@ export default function PasajeroMenu(props: Props) {
     }
 
     return (
-        <ScrollView>
-            <VStack mx={4} my={2}>
-                <Heading>Conductores compartidos</Heading>
-                <Box mt={4}>
-                    {
-                        conductores.map((value: IUsuario, index: number) => (
-                            <Box key={index} mb={4}>
-                                <TouchableHighlight
-                                    style={{ borderRadius: 10 }}
-                                    underlayColor={'rgba(0, 0, 0, 0.08)'}
-                                    onPress={() => props.navigation.navigate("VerConductor", { idDoc: value.idDoc })}>
-                                    <Box backgroundColor={'white'} p={4} borderRadius={10}>
-                                        <ConductorCard conductor={value} />
-                                    </Box>
-                                </TouchableHighlight>
-                            </Box>
-                        ))
-                    }
-                </Box>
-            </VStack>
-        </ScrollView>
+        <Box flex={1} bg={'white'}>
+            <ScrollView>
+                <VStack mx={4} my={2}>
+                    <Heading>Conductores compartidos</Heading>
+                    <Text>
+                        Lista de todos los conductores compartidos.
+                    </Text>
+                    <Box mt={4}>
+                        {
+                            conductores.map((value: IUsuario, index: number) => (
+                                <Box key={index} mb={4}>
+                                    <TouchableHighlight
+                                        style={{ borderRadius: 10 }}
+                                        underlayColor={'rgba(0, 0, 0, 0.08)'}
+                                        onPress={() => props.navigation.navigate("VerConductor", { idDoc: value.idDoc })}>
+                                        <Box backgroundColor={'white'} shadow={'4'} p={4} borderRadius={10}>
+                                            <ConductorCard conductor={value} />
+                                        </Box>
+                                    </TouchableHighlight>
+                                </Box>
+                            ))
+                        }
+                    </Box>
+                </VStack>
+            </ScrollView>
+        </Box>
     )
 }

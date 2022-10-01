@@ -90,80 +90,82 @@ export default function VerConductor(props: Props) {
     }
 
     return (
-        <ScrollView>
-            <VStack my={4} px={4}>
-                <Center>
-                    <Center mb={5}>
-                        <Avatar size={'xl'} mb={2} />
-                        <Heading fontWeight={'light'}>
-                            {`${conductor.nombres?.trim()} ${conductor.apellidos?.trim()}`}
-                        </Heading>
-                        <Text color={'gray.500'}>
-                            Teléfono: {conductor.telefono}
-                        </Text>
+        <Box flex={1} bg={'white'}>
+            <ScrollView>
+                <VStack my={4} px={4}>
+                    <Center>
+                        <Center mb={5}>
+                            <Avatar size={'xl'} mb={2} />
+                            <Heading fontWeight={'light'}>
+                                {`${conductor.nombres?.trim()} ${conductor.apellidos?.trim()}`}
+                            </Heading>
+                            <Text color={'gray.500'}>
+                                Teléfono: {conductor.telefono}
+                            </Text>
+                        </Center>
+                        <Button colorScheme={'lightBlue'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
+                            SOLICITAR VIAJE
+                        </Button>
+                        <Box my={5}>
+                            {
+                                conductor.asegurado ?
+                                    <Alerta
+                                        status='success'
+                                        title='Conductor asegurado'
+                                        description='El conductor a manisfestado tener un seguro.' /> :
+                                    <Alerta
+                                        status='error'
+                                        title='Conductor NO asegurado'
+                                        description='El conductor a manisfestado NO tener un seguro.' />
+                            }
+                        </Box>
                     </Center>
-                    <Button colorScheme={'cyan'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
-                        SOLICITAR VIAJE
-                    </Button>
-                    <Box my={5}>
-                        {
-                            conductor.asegurado ?
-                                <Alerta
-                                    status='success'
-                                    title='Conductor asegurado'
-                                    description='El conductor a manisfestado tener un seguro.' /> :
-                                <Alerta
-                                    status='error'
-                                    title='Conductor NO asegurado'
-                                    description='El conductor a manisfestado NO tener un seguro.' />
-                        }
+                    <Box mb={4}>
+                        <Heading size={'md'} mb={2} fontWeight={'hairline'} color={'gray.500'}>
+                            Información del vehículo
+                        </Heading>
+                        <Stack direction={'column'} space={2} shadow={"3"}>
+                            <Box bg={'white'} rounded="sm" p={4} shadow={'4'}>
+                                <Heading size={'sm'}>
+                                    Modelo y marca
+                                </Heading>
+                                <Text>
+                                    {conductor.vehiculo?.modelo}
+                                </Text>
+                            </Box>
+                            <Box bg={'white'} rounded="sm" p={4} shadow={'4'}>
+                                <Heading size={'sm'}>
+                                    No. de placa / matrícula
+                                </Heading>
+                                <Text color={'blue.500'}>
+                                    {conductor.vehiculo?.numeroPlaca}
+                                </Text>
+                            </Box>
+                            <Box bg={'white'} rounded="sm" p={4} shadow={'4'}>
+                                <Heading size={'sm'}>
+                                    Color
+                                </Heading>
+                                <Text>
+                                    {conductor.vehiculo?.color}
+                                </Text>
+                            </Box>
+                            <Box bg={'white'} rounded="sm" p={4} shadow={'4'}>
+                                <Heading size={'sm'}>
+                                    Tipo
+                                </Heading>
+                                <Text>
+                                    {conductor.vehiculo?.tipoVehiculo.toUpperCase()}
+                                </Text>
+                            </Box>
+                        </Stack>
                     </Box>
-                </Center>
-                <Box mb={4}>
-                    <Heading size={'md'} mb={2} fontWeight={'hairline'} color={'gray.500'}>
-                        Información del vehículo
-                    </Heading>
-                    <Stack direction={'column'} space={2} shadow={"3"}>
-                        <Box bg={'white'} rounded="sm" p={4}>
-                            <Heading size={'sm'}>
-                                Modelo y marca
-                            </Heading>
-                            <Text>
-                                {conductor.vehiculo?.modelo}
-                            </Text>
-                        </Box>
-                        <Box bg={'white'} rounded="sm" p={4}>
-                            <Heading size={'sm'}>
-                                No. de placa / matrícula
-                            </Heading>
-                            <Text color={'blue.500'}>
-                                {conductor.vehiculo?.numeroPlaca}
-                            </Text>
-                        </Box>
-                        <Box bg={'white'} rounded="sm" p={4}>
-                            <Heading size={'sm'}>
-                                Color
-                            </Heading>
-                            <Text>
-                                {conductor.vehiculo?.color}
-                            </Text>
-                        </Box>
-                        <Box bg={'white'} rounded="sm" p={4}>
-                            <Heading size={'sm'}>
-                                Tipo
-                            </Heading>
-                            <Text>
-                                {conductor.vehiculo?.tipoVehiculo.toUpperCase()}
-                            </Text>
-                        </Box>
-                    </Stack>
-                </Box>
-                <Box mb={4}>
-                    <Heading size={'md'} mb={2} fontWeight={'hairline'} color={'gray.500'}>
-                        Ruta actual
-                    </Heading>
-                </Box>
-            </VStack>
-        </ScrollView>
+                    <Box mb={4}>
+                        <Heading size={'md'} mb={2} fontWeight={'hairline'} color={'gray.500'}>
+                            Ruta actual
+                        </Heading>
+                    </Box>
+                </VStack>
+            </ScrollView>
+        </Box>
     )
 }

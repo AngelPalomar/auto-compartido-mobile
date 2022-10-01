@@ -127,9 +127,9 @@ export default function CrearRuta(props: Props) {
     }
 
     return (
-        <ScrollView>
-            <VStack my={1} px={4}>
-                <Box my={4} bg={'white'} p={8} rounded="sm" shadow={'4'}>
+        <Box flex={1} bg={'white'}>
+            <ScrollView>
+                <VStack my={2} p={4}>
                     <Heading size={'sm'} mb={2} color={'gray.500'}>Información de la ruta</Heading>
                     <Input placeholder='Lugar de inicio' variant={'rounded'} mb={4}
                         onChange={(e: input) => setRuta({ ...ruta, lugarInicio: e.nativeEvent.text })} />
@@ -192,8 +192,8 @@ export default function CrearRuta(props: Props) {
                             AGREGAR RUTA
                         </Button>
                     </Center>
-                </Box>
-            </VStack>
-        </ScrollView>
+                </VStack>
+            </ScrollView>
+        </Box>
     )
 }

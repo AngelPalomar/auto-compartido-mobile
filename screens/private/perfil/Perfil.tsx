@@ -85,66 +85,70 @@ export default function Perfil(props: Props) {
     }
 
     return (
-        <ScrollView>
-            <Box bg={'white'} mt={4} mx={4} p={8} rounded='sm' shadow={'4'}>
-                <VStack>
-                    <Center>
-                        <Avatar size={'xl'} mb={2} />
-                        <Heading fontWeight={'light'}>
-                            {`${usuario.nombres?.trim()} ${usuario.apellidos?.trim()}`}
-                        </Heading>
-                        <Text color={'gray.500'}>{auth.currentUser?.email}</Text>
-                        <HStack space={3}>
-                            <Button colorScheme={'blue'} my={2}
-                                leftIcon={<Icon as={<AntDesign name='edit' />} />}
-                                variant={'link'}>
-                                EDITAR PERFIL
-                            </Button>
-                            {
-                                usuario.rol === 'conductor' && (
-                                    <Button colorScheme={'cyan'} my={2}
-                                        variant={'link'}
-                                        leftIcon={<Icon as={<AntDesign name='plus' />} />}
-                                        onPress={() => props.navigation.navigate('CrearRuta')}>
-                                        AGREGAR RUTA
-                                    </Button>
-                                )
-                            }
-                        </HStack>
-                    </Center>
-                    <Box my={4}>
-                        <Heading fontWeight={'light'} color={'gray.500'}>
-                            Información
-                        </Heading>
-                        <Box my={2}>
-                            <Heading size={'sm'} fontWeight={'light'}>
-                                Número telefónico
+        <Box flex={1} bg={'white'}>
+            <ScrollView>
+                <VStack my={2} p={4}>
+                    <VStack mb={8}>
+                        <Center>
+                            <Avatar size={'xl'} mb={2} />
+                            <Heading fontWeight={'light'}>
+                                {`${usuario.nombres?.trim()} ${usuario.apellidos?.trim()}`}
                             </Heading>
-                            <Text color={'gray.500'}>{usuario.telefono}</Text>
-                        </Box>
-                        <Box my={2}>
-                            <Heading size={'sm'} fontWeight={'light'}>
-                                Matrícula UTEQ
+                            <Text color={'gray.500'}>{auth.currentUser?.email}</Text>
+                            <HStack space={3} my={4}>
+                                <Button colorScheme={'lightBlue'}
+                                    leftIcon={<Icon as={<AntDesign name='edit' />} />}>
+                                    EDITAR PERFIL
+                                </Button>
+                                {
+                                    usuario.rol === 'conductor' && (
+                                        <Button colorScheme={'pink'}
+                                            leftIcon={<Icon as={<AntDesign name='plus' />} />}
+                                            onPress={() => props.navigation.navigate('CrearRuta')}>
+                                            AGREGAR RUTA
+                                        </Button>
+                                    )
+                                }
+                            </HStack>
+                        </Center>
+                        <Box mt={4}>
+                            <Heading fontWeight={'light'} color={'gray.500'}>
+                                Información
                             </Heading>
-                            <Text color={'gray.500'}>{usuario.matricula ? usuario.matricula : 'No hay matrícula'}</Text>
+                            <Box my={2}>
+                                <Heading size={'sm'} fontWeight={'light'}>
+                                    Número telefónico
+                                </Heading>
+                                <Text color={'gray.500'}>{usuario.telefono}</Text>
+                            </Box>
+                            <Box my={2}>
+                                <Heading size={'sm'} fontWeight={'light'}>
+                                    Matrícula UTEQ
+                                </Heading>
+                                <Text color={'gray.500'}>{usuario.matricula || usuario.matricula === '' ? usuario.matricula : 'No hay matrícula'}</Text>
+                            </Box>
                         </Box>
-                        <Box my={2}>
-                            <Button variant={'link'} colorScheme={'red'} size={'lg'}
-                                onPress={cerrarSesion}
-                                leftIcon={<Icon as={<AntDesign name='poweroff' />} />}>
-                                Cerrar sesión
-                            </Button>
-                        </Box>
+                    </VStack>
+                    {
+                        usuario.rol === 'conductor' && (
+                            <Box mb={8}>
+                                <Heading fontWeight={'light'}>Mis rutas</Heading>
+                                <Text>
+                                    Selecciona una ruta para activarla
+                                </Text>
+                            </Box>
+                        )
+                    }
+                    <Box>
+                        <Button colorScheme={'red'}
+                            onPress={cerrarSesion}
+                            leftIcon={<Icon as={<AntDesign name='poweroff' />} />}>
+                            Cerrar sesión
+                        </Button>
                     </Box>
                 </VStack>
-            </Box>
-            <Box bg={'white'} m={4} p={8} rounded='sm' shadow={'4'}>
-                <Heading fontWeight={'light'}>Mis rutas</Heading>
-                <Text>
-                    Selecciona una ruta para activarla
-                </Text>
-            </Box>
-        </ScrollView>
+            </ScrollView>
+        </Box>
     )
 }
 

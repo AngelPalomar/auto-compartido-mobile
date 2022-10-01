@@ -134,29 +134,29 @@ const RegistrarLicencia = (props: Props) => {
     }
 
     return (
-        <SafeAreaView>
+        <Box flex={1} bg={'white'}>
             <ScrollView>
-                <Center>
+                <Center mb={10} mt={6}>
                     <VStack space={5} alignItems="center">
                         <Box>
                             <Heading textAlign={'center'}>
                                 Ser conductor UTEQ
                             </Heading>
-                            <Text alignItems="center" color={'cyan.800'}>
+                            <Text alignItems="center" color={'lightBlue.800'}>
                                 Todos los campo son requeridos.
                             </Text>
                         </Box>
                         <Box alignItems={'center'}>
                             <Text mb={2}>Datos de tu licencia</Text>
                             <Box alignItems={'center'}>
-                                <Text mb={2} color={'cyan.800'}>
+                                <Text mb={2} color={'lightBlue.800'}>
                                     Sube una foto de tu licencia de conducir
                                 </Text>
                                 <Box
                                     width={300}
                                     height={250}
                                     borderStyle={'dotted'}
-                                    borderColor={'cyan.500'}
+                                    borderColor={'lightBlue.500'}
                                     borderWidth={3}
                                     justifyContent={'center'}
                                     p={6}
@@ -171,16 +171,17 @@ const RegistrarLicencia = (props: Props) => {
                                         }
                                         <Button
                                             onPress={subirFotoLicencia}
+                                            colorScheme={'lightBlue'}
                                             leftIcon={<Icon as={<SimpleLineIcons />} name={'camera'} color={'white'} />} >
                                             ABRIR GALERÍA
                                         </Button>
                                     </Center>
                                 </Box>
                                 <Icon as={<SimpleLineIcons />} name={'info'} color={'info.500'} size={4} />
-                                <Text mb={2} color={'cyan.800'} textAlign={'center'}>¿Estás asegurado?</Text>
+                                <Text mb={2} color={'lightBlue.800'} textAlign={'center'}>¿Estás asegurado?</Text>
                                 <Text mb={2} textAlign={'center'}>Esta información se le mostrará a los pasajero interesados</Text>
                                 <Box mb={4}>
-                                    <Radio.Group name='aseguradoGroup' accessibilityLabel={'¿Estás asegurado?'} value={conductor.asegurado ? 'si' : 'no'}
+                                    <Radio.Group name='aseguradoGroup' accessibilityLabel={'¿Estás asegurado?'} colorScheme={'lightBlue'} value={conductor.asegurado ? 'si' : 'no'}
                                         onChange={(value: string) => {
                                             if (value === 'si')
                                                 setConductor({ ...conductor, asegurado: true });
@@ -195,7 +196,7 @@ const RegistrarLicencia = (props: Props) => {
                                         </Radio>
                                     </Radio.Group>
                                 </Box>
-                                <Button isLoading={isLoading} onPress={crearConductor} colorScheme={'cyan'} mb={10}>
+                                <Button isLoading={isLoading} onPress={crearConductor} colorScheme={'lightBlue'} mb={10}>
                                     CREA CUENTA AHORA
                                 </Button>
                             </Box>
@@ -203,7 +204,7 @@ const RegistrarLicencia = (props: Props) => {
                     </VStack>
                 </Center>
             </ScrollView>
-        </SafeAreaView>
+        </Box>
     )
 }
 

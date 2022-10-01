@@ -24,17 +24,17 @@ export default function SolicitudCard({ solicitud }: SolicitudCardProps) {
                     <Text fontSize={'sm'} color={'gray.500'} mb={4}>
                         {solicitud.fechaHora}
                     </Text>
-                    <HStack justifyContent={'flex-end'} w={{ base: '92%' }}>
-                        <Button variant={'link'} colorScheme={'emerald'}
-                            leftIcon={<Icon as={<SimpleLineIcons name='check' />} />}>
-                            Aceptar
-                        </Button>
-                        <Button variant={'link'} colorScheme={'red'}
-                            leftIcon={<Icon as={<SimpleLineIcons name='close' />} />}>
-                            Rechazar
-                        </Button>
-                    </HStack>
                 </VStack>
+                <HStack justifyContent={'flex-end'} w={{ base: '90%' }} space={3}>
+                    <Button colorScheme={'lightBlue'} size={'sm'}
+                        leftIcon={<Icon as={<SimpleLineIcons name='check' />} />}>
+                        Aceptar
+                    </Button>
+                    <Button colorScheme={'pink'} size={'sm'}
+                        leftIcon={<Icon as={<SimpleLineIcons name='close' />} />}>
+                        Rechazar
+                    </Button>
+                </HStack>
             </Box>
         </HStack>
     )

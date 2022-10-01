@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View, Text, Center, VStack, Heading, Box, Input, Button, useToast, Stack, InputGroup, InputRightAddon } from 'native-base'
+import { Text, Center, VStack, Heading, Box, Input, Button, useToast, Stack, InputGroup, InputRightAddon } from 'native-base'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
     ScrollView, Image, NativeSyntheticEvent,
@@ -113,9 +113,9 @@ export default function Registrarse(props: Props) {
     }
 
     return (
-        <SafeAreaView>
+        <Box flex={1} bg={'white'}>
             <ScrollView>
-                <Center mb={10}>
+                <Center mb={10} mt={6}>
                     <VStack space={5} alignItems="center">
                         <Box>
                             <Heading textAlign={'center'}>
@@ -153,7 +153,7 @@ export default function Registrarse(props: Props) {
                             </Text>
                             <Input px={3} mb={5} placeholder={'Matrícula'} width={'80%'} keyboardType='number-pad' variant={'rounded'}
                                 onChange={(e: input): void => setPasajero({ ...pasajero, matricula: e.nativeEvent.text })} />
-                            <Button colorScheme={'darkBlue'} onPress={crearPasajero} isLoading={isLoading}>
+                            <Button colorScheme={'lightBlue'} onPress={crearPasajero} isLoading={isLoading}>
                                 CREAR CUENTA
                             </Button>
                         </Box>
@@ -169,6 +169,6 @@ export default function Registrarse(props: Props) {
                     }}
                 />
             </ScrollView>
-        </SafeAreaView>
+        </Box>
     )
 }

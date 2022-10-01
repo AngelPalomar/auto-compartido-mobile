@@ -62,21 +62,21 @@ export default function App() {
           <Stack.Screen name="RegistrarseConductor" component={RegistrarseConductor} options={{
             title: 'Crear una cuenta como conductor',
             headerStyle: {
-              backgroundColor: theme.colors.cyan[500]
+              backgroundColor: theme.colors.darkBlue[800]
             },
             headerTintColor: '#FFFFFF'
           }} />
           <Stack.Screen name="RegistrarVehiculo" component={RegistrarVehiculo} options={{
             title: 'Datos de tu vehiculo',
             headerStyle: {
-              backgroundColor: theme.colors.cyan[500]
+              backgroundColor: theme.colors.darkBlue[800]
             },
             headerTintColor: '#FFFFFF'
           }} />
           <Stack.Screen name="RegistrarLicencia" component={RegistrarLicencia} options={{
             title: 'Datos de tu licencia',
             headerStyle: {
-              backgroundColor: theme.colors.cyan[500]
+              backgroundColor: theme.colors.darkBlue[800]
             },
             headerTintColor: '#FFFFFF'
           }} />
@@ -86,14 +86,14 @@ export default function App() {
           <Stack.Screen name="VerConductor" component={VerConductor} options={{
             title: '',
             headerStyle: {
-              backgroundColor: theme.colors.cyan[500]
+              backgroundColor: theme.colors.darkBlue[800]
             },
             headerTintColor: '#FFFFFF'
           }} />
           <Stack.Screen name="CrearRuta" component={CrearRuta} options={{
             title: 'Crear una nueva ruta',
             headerStyle: {
-              backgroundColor: theme.colors.cyan[500]
+              backgroundColor: theme.colors.darkBlue[800]
             },
             headerTintColor: '#FFFFFF'
           }} />

@@ -86,9 +86,9 @@ export default function RegistrarseConductor(props: Props) {
     }
 
     return (
-        <SafeAreaView>
+        <Box flex={1} bg={'white'}>
             <ScrollView>
-                <Center mb={10}>
+                <Center mb={10} mt={6}>
                     <VStack space={5} alignItems="center">
                         <Box>
                             <Heading textAlign={'center'}>
@@ -127,7 +127,7 @@ export default function RegistrarseConductor(props: Props) {
                             </Text>
                             <Input px={3} mb={5} placeholder={'Matrícula'} width={'80%'} keyboardType='number-pad' variant={'rounded'}
                                 onChange={(e: input): void => setConductor({ ...conductor, matricula: e.nativeEvent.text })} />
-                            <Button colorScheme={'cyan'} rightIcon={<Icon as={<SimpleLineIcons />} name={'arrow-right'} color={'white'} />}
+                            <Button colorScheme={'lightBlue'} rightIcon={<Icon as={<SimpleLineIcons />} name={'arrow-right'} color={'white'} />}
                                 onPress={validacionCampos}>
                                 SIGUIENTE
                             </Button>
@@ -144,6 +144,6 @@ export default function RegistrarseConductor(props: Props) {
                     }}
                 />
             </ScrollView>
-        </SafeAreaView>
+        </Box>
     )
 }
