@@ -49,7 +49,7 @@ export default function PasajeroMenu(props: Props) {
                                     <TouchableHighlight
                                         style={{ borderRadius: 10 }}
                                         underlayColor={'rgba(0, 0, 0, 0.08)'}
-                                        onPress={() => props.navigation.navigate("VerConductor", { idDoc: value.idDoc })}>
+                                        onPress={() => props.navigation.navigate("VerConductor", { idDoc: value.idDoc, idAuth: value.idAuth })}>
                                         <Box backgroundColor={'white'} shadow={'4'} p={4} borderRadius={10}>
                                             <ConductorCard conductor={value} />
                                         </Box>

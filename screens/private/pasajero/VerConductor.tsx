@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { doc, getDoc, getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, collection, addDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import {
     Avatar, Center, Heading, ScrollView, Spinner, VStack, Text, Box, Stack,
     Button,
@@ -12,6 +12,8 @@ import initFirebase from '../../../firebase/init';
 import Alerta from '../../../components/alerta/Alerta';
 import ISolicitud from '../../../interfaces/solicitud.interface';
 import { getAuth } from 'firebase/auth';
+import RutaDetalleCard from '../../../components/ruta_detalle_card/RutaDetalleCard';
+import IRuta from '../../../interfaces/ruta.interface';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VerConductor'>;
 
@@ -26,12 +28,17 @@ export default function VerConductor(props: Props) {
     const q = query(pasajeroRef, where("idAuth", "==", auth.currentUser?.uid));
     const [pasajero, setPasajero] = useState<Partial<IUsuario>>({});
 
+    const [rutaActual, setRutaActual] = useState<Partial<IRuta> | null>(null);
+    const rutasRef = collection(db, "rutas");
+    const qRutaActual = query(rutasRef, where("activo", "==", true), where("idAuthConductor", "==", params.idAuth));
+
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isRequesting, setIsRequesting] = useState<boolean>(false);
     const toast = useToast();
 
     useEffect(() => {
         getConductorDoc();
+        getRutaActual();
     }, []);
 
     const getConductorDoc = () => {
@@ -56,6 +63,17 @@ export default function VerConductor(props: Props) {
                 setIsLoading(false);
             }
         })
+    }
+
+    const getRutaActual = () => {
+        if (conductor) {
+            onSnapshot(qRutaActual, querySnapshot => {
+                //Guarda la primera que encuentra activa
+                if (querySnapshot.docs.length > 0) {
+                    setRutaActual(querySnapshot.docs[0].data() as IRuta);
+                }
+            });
+        }
     }
 
     const solicitarViaje = () => {
@@ -103,10 +121,13 @@ export default function VerConductor(props: Props) {
                                 Teléfono: {conductor.telefono}
                             </Text>
                         </Center>
-                        <Button colorScheme={'lightBlue'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
+                        <Button mb={2} colorScheme={'lightBlue'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
                             SOLICITAR VIAJE
                         </Button>
-                        <Box my={5}>
+                        <Button mb={4} colorScheme={'lightBlue'} variant={'link'}>
+                            Ver licencia
+                        </Button>
+                        <Box mb={5}>
                             {
                                 conductor.asegurado ?
                                     <Alerta
@@ -120,6 +141,21 @@ export default function VerConductor(props: Props) {
                             }
                         </Box>
                     </Center>
+                    <Box mb={4}>
+                        <Heading size={'md'} mb={2} fontWeight={'hairline'} color={'gray.500'}>
+                            Ruta actual
+                        </Heading>
+                        <Box>
+                            {
+                                rutaActual ?
+                                    <RutaDetalleCard ruta={rutaActual as IRuta} lugaresDisponibles={conductor.vehiculo?.asientosDisponibles as number} /> :
+                                    <Alerta
+                                        title='No hay ruta activa'
+                                        description='El conductor no tiene una ruta activa.'
+                                        status='info' />
+                            }
+                        </Box>
+                    </Box>
                     <Box mb={4}>
                         <Heading size={'md'} mb={2} fontWeight={'hairline'} color={'gray.500'}>
                             Información del vehículo
@@ -158,11 +194,6 @@ export default function VerConductor(props: Props) {
                                 </Text>
                             </Box>
                         </Stack>
-                    </Box>
-                    <Box mb={4}>
-                        <Heading size={'md'} mb={2} fontWeight={'hairline'} color={'gray.500'}>
-                            Ruta actual
-                        </Heading>
                     </Box>
                 </VStack>
             </ScrollView>

@@ -44,7 +44,8 @@ const RegistrarLicencia = (props: Props) => {
             color: params.color,
             modelo: params.modelo,
             numeroPlaca: params.numeroPlaca,
-            tipoVehiculo: params.tipoVehiculo
+            tipoVehiculo: params.tipoVehiculo,
+            asientosDisponibles: params.asientosDisponibles
         }
     });
     const [autenticacion, setAutenticacion] = useState<IAuth>({

@@ -30,7 +30,7 @@ export default function SolicitudCard({ solicitud }: SolicitudCardProps) {
                         leftIcon={<Icon as={<SimpleLineIcons name='check' />} />}>
                         Aceptar
                     </Button>
-                    <Button colorScheme={'pink'} size={'sm'}
+                    <Button colorScheme={'purple'} size={'sm'}
                         leftIcon={<Icon as={<SimpleLineIcons name='close' />} />}>
                         Rechazar
                     </Button>

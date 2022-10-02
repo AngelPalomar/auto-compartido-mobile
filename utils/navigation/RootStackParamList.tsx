@@ -28,7 +28,8 @@ type RootStackParamList = {
     Inicio: undefined,
     PasajeroMenu: undefined,
     VerConductor: {
-        idDoc: string | undefined
+        idDoc: string | undefined,
+        idAuth: string | undefined
     },
     ConductorMenu: undefined,
     CrearRuta: undefined,

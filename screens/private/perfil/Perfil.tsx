@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import {
     Avatar, Box, Center, ScrollView, VStack, Heading, Spinner, Button, Text,
-    useToast, useColorMode, HStack, Switch, Icon
+    useToast, useColorMode, HStack, Switch, Icon, theme
 } from 'native-base'
-import { collection, getFirestore, where, query, getDocs } from 'firebase/firestore';
+import {
+    collection, getFirestore, where, query, getDocs,
+    doc, updateDoc, onSnapshot
+} from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import initFirebase from '../../../firebase/init';
 import IUsuario from '../../../interfaces/usuario.interface';
@@ -20,7 +23,7 @@ export default function Perfil(props: Props) {
     const usuariosRef = collection(db, "usuarios");
     const rutasRef = collection(db, 'rutas');
     const qUsuario = query(usuariosRef, where("idAuth", "==", auth.currentUser?.uid));
-    const qRuta = query(rutasRef, where("idAuthConductor", "==", auth.currentUser?.email));
+    const qRuta = query(rutasRef, where("idAuthConductor", "==", auth.currentUser?.uid));
     const [usuario, setUsuario] = useState<Partial<IUsuario>>({});
     const [rutas, setRutas] = useState<Array<IRuta>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -39,16 +42,7 @@ export default function Perfil(props: Props) {
 
                 //Trae las rutas
                 if (dataUsuario.rol === 'conductor') {
-                    getDocs(qRuta).then(querySnapshot => {
-                        let rts: IRuta[] = [];
-
-                        querySnapshot.forEach(doc => {
-                            rts.push(doc.data() as IRuta);
-                        })
-
-                        setRutas(rts);
-                        setIsLoading(false);
-                    })
+                    getRutasDocs();
                 } else {
                     setIsLoading(false);
                 }
@@ -57,6 +51,31 @@ export default function Perfil(props: Props) {
             console.error(err);
             setIsLoading(false);
         })
+    }
+
+    const getRutasDocs = () => {
+        onSnapshot(qRuta, (querySnapshot) => {
+            const rts: IRuta[] = [];
+
+            querySnapshot.forEach(doc => {
+                rts.push({ ...doc.data(), idDoc: doc.id } as IRuta);
+            })
+
+            setRutas(rts);
+            setIsLoading(false);
+        })
+    }
+
+    const activarRuta = (idDoc: string, value: boolean) => {
+        const rutaRef = doc(db, 'rutas', idDoc);
+
+        updateDoc(rutaRef, {
+            activo: value
+        }).then(() => {
+            toast.show({ description: value ? "Ruta activada" : "Ruta desactivada" });
+        }).catch(() => {
+            toast.show({ description: "Ocurrió un error." });
+        });
     }
 
     const cerrarSesion = () => {
@@ -100,15 +119,6 @@ export default function Perfil(props: Props) {
                                     leftIcon={<Icon as={<AntDesign name='edit' />} />}>
                                     EDITAR PERFIL
                                 </Button>
-                                {
-                                    usuario.rol === 'conductor' && (
-                                        <Button colorScheme={'pink'}
-                                            leftIcon={<Icon as={<AntDesign name='plus' />} />}
-                                            onPress={() => props.navigation.navigate('CrearRuta')}>
-                                            AGREGAR RUTA
-                                        </Button>
-                                    )
-                                }
                             </HStack>
                         </Center>
                         <Box mt={4}>
@@ -133,15 +143,43 @@ export default function Perfil(props: Props) {
                         usuario.rol === 'conductor' && (
                             <Box mb={8}>
                                 <Heading fontWeight={'light'}>Mis rutas</Heading>
-                                <Text>
+                                <Text mb={4}>
                                     Selecciona una ruta para activarla
                                 </Text>
+                                <Button colorScheme={'lightBlue'}
+                                    mb={4}
+                                    variant={'solid'}
+                                    leftIcon={<Icon as={<AntDesign name='plus' />} />}
+                                    onPress={() => props.navigation.navigate('CrearRuta')}>
+                                    AGREGAR RUTA
+                                </Button>
+                                {
+                                    rutas.map((value: IRuta, index: number) => (
+                                        <Box key={index} mb={2} bg={'blue.100'} p={4} width={'full'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                                            <HStack alignItems={'center'} space={2}>
+                                                <Text color={'gray.500'} fontSize={'lg'}>
+                                                    {`[${value.horaSalida}]`}
+                                                </Text>
+                                                <Text color={'darkBlue.800'} fontSize={'lg'}>
+                                                    {value.lugarInicio.trim()}
+                                                </Text>
+                                                <AntDesign name={'arrowright'} color={theme.colors.darkBlue[500]}
+                                                    size={24} />
+                                                <Text color={'darkBlue.800'} fontSize={'lg'}>
+                                                    {value.lugarDestino.trim()}
+                                                </Text>
+                                            </HStack>
+                                            <Switch colorScheme={'darkBlue'} onValueChange={(swt: boolean) => activarRuta(value.idDoc as string, swt)} />
+                                        </Box>
+                                    ))
+                                }
                             </Box>
                         )
                     }
                     <Box>
-                        <Button colorScheme={'red'}
+                        <Button colorScheme={'blue'}
                             onPress={cerrarSesion}
+                            variant={'link'}
                             leftIcon={<Icon as={<AntDesign name='poweroff' />} />}>
                             Cerrar sesión
                         </Button>

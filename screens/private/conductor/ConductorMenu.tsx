@@ -1,6 +1,6 @@
 import { ScrollView, VStack, Heading, Box, Text } from 'native-base';
 import React, { useState, useEffect } from 'react';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
 
 import initFirebase from '../../../firebase/init';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,16 +22,15 @@ export default function ConductorMenu(props: Props) {
     }, []);
 
     const getSolicitudesDocs = () => {
-        getDocs(q).then(querySnapshot => {
+        onSnapshot(q, querySnapshot => {
             let solc: Array<ISolicitud> = [];
+
             querySnapshot.forEach((doc) => {
                 solc.push({ ...doc.data(), idDoc: doc.id } as ISolicitud);
             });
 
             setSolicitudes(solc);
-        }).catch(err => {
-            console.error(err);
-        })
+        });
     }
 
     return (
