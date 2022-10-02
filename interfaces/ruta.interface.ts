@@ -9,6 +9,11 @@ export default interface IRuta {
     idAuthConductor: string,
     lugarDestino: string,
     lugarInicio: string,
-    pasajeros: Array<string>,
+    pasajeros: Array<{
+        idDoc: string,
+        idAuth: string,
+        nombres: string,
+        apellidos: string,
+    }>,
     puntos: Array<IPunto>
 }
