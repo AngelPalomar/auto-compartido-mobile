@@ -68,10 +68,15 @@ export default function VerConductor(props: Props) {
     const getRutaActual = () => {
         if (conductor) {
             onSnapshot(qRutaActual, querySnapshot => {
-                //Guarda la primera que encuentra activa
-                if (querySnapshot.docs.length > 0) {
-                    setRutaActual(querySnapshot.docs[0].data() as IRuta);
-                }
+                let rts: IRuta[] = [];
+                querySnapshot.forEach(doc => {
+                    rts.push(doc.data() as IRuta);
+                })
+
+                if (rts.length > 0)
+                    setRutaActual(rts[0]);
+                else
+                    setRutaActual(null);
             });
         }
     }

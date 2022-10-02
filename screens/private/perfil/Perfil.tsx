@@ -169,7 +169,7 @@ export default function Perfil(props: Props) {
                                                     {value.lugarDestino.trim()}
                                                 </Text>
                                             </HStack>
-                                            <Switch colorScheme={'darkBlue'} onValueChange={(swt: boolean) => activarRuta(value.idDoc as string, swt)} />
+                                            <Switch defaultIsChecked={value.activo} colorScheme={'darkBlue'} onValueChange={(swt: boolean) => activarRuta(value.idDoc as string, swt)} />
                                         </Box>
                                     ))
                                 }
