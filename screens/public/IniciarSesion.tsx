@@ -10,6 +10,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import initFirebase from '../../firebase/init';
 import { minLenghtValidation } from '../../utils/functions/formValidation';
 import { FirebaseError } from 'firebase/app';
+import pjson from '../../package.json';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'IniciarSesion'>
 
@@ -111,7 +112,11 @@ const IniciarSesion = (props: Props) => {
                         </Box>
                     </VStack>
                 </Center>
-            </ScrollView >
+            </ScrollView>
+            <Text color={'gray.400'} fontSize={'xs'} textAlign={'center'} bottom={'0'}>
+                Versión {pjson.version} {'\n'}
+                Todos los derechos reservados
+            </Text>
         </Box>
     )
 }
