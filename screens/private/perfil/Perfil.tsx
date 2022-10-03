@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AntDesign } from '@expo/vector-icons';
 import IRuta from '../../../interfaces/ruta.interface';
+import Alerta from '../../../components/alerta/Alerta';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Perfil'>;
 
@@ -121,6 +122,21 @@ export default function Perfil(props: Props) {
                                 </Button>
                             </HStack>
                         </Center>
+                        {
+                            !auth.currentUser?.emailVerified && (
+                                <Center>
+                                    <Box my={2}>
+                                        <Alerta
+                                            title={'Correo electrónico no verificado'}
+                                            description={'Tu dirección de correo electrónico no ha sido verificada; presiona para verificarla. De lo contrario, si eres conductor, no aparecerás en la lista de conductores compartidos.'}
+                                            status={'warning'} />
+                                    </Box>
+                                    <Button colorScheme={'warning'} size={'sm'}>
+                                        VERIFICAR CORREO ELECTRÓNICO
+                                    </Button>
+                                </Center>
+                            )
+                        }
                         <Box mt={4}>
                             <Heading fontWeight={'light'} color={'gray.500'}>
                                 Información
@@ -144,7 +160,7 @@ export default function Perfil(props: Props) {
                             <Box mb={8}>
                                 <Heading fontWeight={'light'}>Mis rutas</Heading>
                                 <Text mb={4}>
-                                    Selecciona una ruta para activarla
+                                    Selecciona una ruta para activarla y empezar el recorrido
                                 </Text>
                                 <Button colorScheme={'lightBlue'}
                                     mb={4}

@@ -1,19 +1,17 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { doc, getDoc, getFirestore, collection, addDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
-import {
-    Avatar, Center, Heading, ScrollView, Spinner, VStack, Text, Box, Stack,
-    Button,
-    useToast
-} from 'native-base';
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView } from 'react-native';
-import IUsuario from '../../../interfaces/usuario.interface';
-import initFirebase from '../../../firebase/init';
-import Alerta from '../../../components/alerta/Alerta';
-import ISolicitud from '../../../interfaces/solicitud.interface';
 import { getAuth } from 'firebase/auth';
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
+import {
+    Avatar, Box, Button, Center, Heading, ScrollView, Spinner, Stack, Text, useToast, VStack
+} from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native';
+import Alerta from '../../../components/alerta/Alerta';
 import RutaDetalleCard from '../../../components/ruta_detalle_card/RutaDetalleCard';
+import initFirebase from '../../../firebase/init';
 import IRuta from '../../../interfaces/ruta.interface';
+import ISolicitud from '../../../interfaces/solicitud.interface';
+import IUsuario from '../../../interfaces/usuario.interface';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VerConductor'>;
 
@@ -88,7 +86,8 @@ export default function VerConductor(props: Props) {
             pasajero: {
                 nombres: pasajero.nombres,
                 apellidos: pasajero.apellidos,
-                telefono: pasajero.telefono
+                telefono: pasajero.telefono,
+                idAuth: auth.currentUser?.uid as string
             },
             fechaHora: new Date().toDateString(),
             status: 'pendiente'

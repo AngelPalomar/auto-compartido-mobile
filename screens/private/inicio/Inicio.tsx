@@ -62,9 +62,11 @@ const Inicio = () => {
                             backgroundColor: theme.colors.darkBlue[800]
                         },
                         headerTintColor: '#FFFFFF',
-                        tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
-                            <AntDesign name='home' size={24} color={theme.colors.lightBlue[500]} />
-                        )
+                        tabBarIcon: (props): ReactNode => (
+                            <AntDesign name='home' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
+                        ),
+                        tabBarActiveTintColor: theme.colors.lightBlue[500],
+                        tabBarInactiveTintColor: theme.colors.gray[500],
                     }} />
                     : usuario.rol === 'pasajero' ?
                         <Tab.Screen name='PasajeroMenu' component={PasajeroMenu} options={{
@@ -73,9 +75,11 @@ const Inicio = () => {
                                 backgroundColor: theme.colors.darkBlue[800]
                             },
                             headerTintColor: '#FFFFFF',
-                            tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
-                                <AntDesign name='home' size={24} color={theme.colors.lightBlue[500]} />
-                            )
+                            tabBarIcon: (props): ReactNode => (
+                                <AntDesign name='home' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
+                            ),
+                            tabBarActiveTintColor: theme.colors.lightBlue[500],
+                            tabBarInactiveTintColor: theme.colors.gray[500],
                         }} /> : null
             }
             <Tab.Screen name='Viajes' component={Viajes} options={{
@@ -84,9 +88,11 @@ const Inicio = () => {
                     backgroundColor: theme.colors.darkBlue[800]
                 },
                 headerTintColor: '#FFFFFF',
-                tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
-                    <AntDesign name='car' size={24} color={theme.colors.lightBlue[500]} />
-                )
+                tabBarIcon: (props): ReactNode => (
+                    <AntDesign name='car' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
+                ),
+                tabBarActiveTintColor: theme.colors.lightBlue[500],
+                tabBarInactiveTintColor: theme.colors.gray[500],
             }} />
             <Tab.Screen name='Perfil' component={Perfil} options={{
                 title: 'Mi perfil',
@@ -94,9 +100,11 @@ const Inicio = () => {
                     backgroundColor: theme.colors.darkBlue[800]
                 },
                 headerTintColor: '#FFFFFF',
-                tabBarIcon: ({ focused: boolean, color: string, size: number }): ReactNode => (
-                    <AntDesign name='user' size={24} color={theme.colors.lightBlue[500]} />
-                )
+                tabBarIcon: (props): ReactNode => (
+                    <AntDesign name='user' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
+                ),
+                tabBarActiveTintColor: theme.colors.lightBlue[500],
+                tabBarInactiveTintColor: theme.colors.gray[500],
             }} />
         </Tab.Navigator>
     )

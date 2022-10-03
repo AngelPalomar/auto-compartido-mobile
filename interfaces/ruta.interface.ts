@@ -1,19 +1,14 @@
 import IPunto from "./punto.interface"
+import IUsuario from "./usuario.interface"
 
 export default interface IRuta {
     idDoc?: string,
     activo: boolean,
-    descripcion: string,
-    estado: 'creado' | 'preparacion' | 'curso' | 'terminado'
+    descripcion: string
     horaSalida: string,
     idAuthConductor: string,
     lugarDestino: string,
     lugarInicio: string,
-    pasajeros: Array<{
-        idDoc: string,
-        idAuth: string,
-        nombres: string,
-        apellidos: string,
-    }>,
+    pasajeros: Partial<IUsuario>[],
     puntos: Array<IPunto>
 }

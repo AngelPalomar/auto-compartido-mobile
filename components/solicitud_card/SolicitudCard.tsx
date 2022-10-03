@@ -4,10 +4,13 @@ import ISolicitud from '../../interfaces/solicitud.interface'
 import { SimpleLineIcons } from '@expo/vector-icons';
 
 interface SolicitudCardProps {
-    solicitud: ISolicitud
+    solicitud: ISolicitud,
+    aceptar: () => void,
+    rechazar: () => void,
+    rutaActiva?: boolean
 }
 
-export default function SolicitudCard({ solicitud }: SolicitudCardProps) {
+export default function SolicitudCard({ solicitud, aceptar, rechazar, rutaActiva }: SolicitudCardProps) {
     return (
         <HStack>
             <Box mr={4}>
@@ -27,11 +30,14 @@ export default function SolicitudCard({ solicitud }: SolicitudCardProps) {
                 </VStack>
                 <HStack justifyContent={'flex-end'} w={{ base: '90%' }} space={3}>
                     <Button colorScheme={'lightBlue'} size={'sm'}
-                        leftIcon={<Icon as={<SimpleLineIcons name='check' />} />}>
+                        leftIcon={<Icon as={<SimpleLineIcons name='check' />} />}
+                        onPress={aceptar}
+                        isDisabled={rutaActiva ? false : true}>
                         Aceptar
                     </Button>
                     <Button colorScheme={'purple'} size={'sm'}
-                        leftIcon={<Icon as={<SimpleLineIcons name='close' />} />}>
+                        leftIcon={<Icon as={<SimpleLineIcons name='close' />} />}
+                        onPress={rechazar}>
                         Rechazar
                     </Button>
                 </HStack>
