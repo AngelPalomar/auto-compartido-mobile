@@ -31,7 +31,6 @@ export default function Viajes() {
         }
     }, [usuario])
 
-
     const getUsuarioDoc = () => {
         getDocs(qUsuario).then(querySnapshot => {
             querySnapshot.forEach(doc => {
@@ -50,7 +49,12 @@ export default function Viajes() {
         if (usuario?.rol === 'conductor') {
             qRutaActual = query(rutasRef, where("activo", "==", true), where("idAuthConductor", "==", auth.currentUser?.uid));
         } else {
-            qRutaActual = query(rutasRef, where("activo", "==", true), where("pasajeros", "array-contains", { idAuth: auth.currentUser?.uid }));
+            qRutaActual = query(rutasRef, where("activo", "==", true), where("pasajeros", "array-contains", {
+                nombres: usuario?.nombres,
+                apellidos: usuario?.apellidos,
+                idAuth: auth.currentUser?.uid,
+                telefono: usuario?.telefono
+            }));
         }
 
         onSnapshot(qRutaActual, querySnapshot => {
@@ -64,10 +68,6 @@ export default function Viajes() {
             else
                 setRutaActual(null);
         });
-    }
-
-    const getRutaActualPasajero = () => {
-
     }
 
     if (isLoading) {
@@ -122,7 +122,7 @@ export default function Viajes() {
                                                     <Box>
                                                         {
                                                             rutaActual.pasajeros?.map((value: Partial<IUsuario>, index: number) => (
-                                                                <HStack alignItems={'center'} space={3}>
+                                                                <HStack alignItems={'center'} space={3} key={index}>
                                                                     <AntDesign name={'user'} size={20} color={theme.colors.blue[500]} />
                                                                     <Text fontSize={'md'} color={'gray.500'}>
                                                                         {`${value.nombres?.trim()} ${value.apellidos?.trim()}`}
@@ -142,12 +142,26 @@ export default function Viajes() {
                                 {
                                     !rutaActual ?
                                         <React.Fragment>
-
+                                            <Heading fontWeight={'light'} mb={2}>
+                                                No estás en una ruta
+                                            </Heading>
+                                            <Text color={'darkBlue.500'}>
+                                                Envía una solicitud a un conductor para que te agrege a su ruta
+                                            </Text>
                                         </React.Fragment> :
                                         <React.Fragment>
-                                            <Heading fontWeight={'light'} mb={2}>
+                                            <Heading fontWeight={'light'}>
                                                 Estás en una ruta
                                             </Heading>
+                                            <HStack mb={2} alignItems={'center'} space={2}>
+                                                <Text fontWeight={'light'}>
+                                                    {rutaActual.lugarInicio?.trim()}
+                                                </Text>
+                                                <AntDesign name={'arrowright'} color={theme.colors.blue[500]} size={20} />
+                                                <Text fontWeight={'light'}>
+                                                    {rutaActual.lugarDestino?.trim()}
+                                                </Text>
+                                            </HStack>
                                             <Text color={'darkBlue.500'}>
                                                 Conductor
                                             </Text>
