@@ -34,7 +34,8 @@ export default function Registrarse(props: Props) {
         idAuth: '',
         nombres: '',
         telefono: '',
-        vehiculo: null
+        vehiculo: null,
+        verificado: false
     });
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const toast = useToast();

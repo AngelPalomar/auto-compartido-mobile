@@ -11,5 +11,6 @@ export default interface IUsuario {
     nombres: string,
     telefono: string,
     rol: 'admin' | 'conductor' | 'pasajero',
-    vehiculo: IVehiculo | null
+    vehiculo: IVehiculo | null,
+    verificado: boolean
 }

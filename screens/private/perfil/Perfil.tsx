@@ -7,7 +7,7 @@ import {
     collection, getFirestore, where, query, getDocs,
     doc, updateDoc, onSnapshot
 } from 'firebase/firestore';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, sendEmailVerification, signOut, User } from 'firebase/auth';
 import initFirebase from '../../../firebase/init';
 import IUsuario from '../../../interfaces/usuario.interface';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AntDesign } from '@expo/vector-icons';
 import IRuta from '../../../interfaces/ruta.interface';
 import Alerta from '../../../components/alerta/Alerta';
+import { RefreshControl } from 'react-native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Perfil'>;
 
@@ -25,20 +26,36 @@ export default function Perfil(props: Props) {
     const rutasRef = collection(db, 'rutas');
     const qUsuario = query(usuariosRef, where("idAuth", "==", auth.currentUser?.uid));
     const qRuta = query(rutasRef, where("idAuthConductor", "==", auth.currentUser?.uid));
-    const [usuario, setUsuario] = useState<Partial<IUsuario>>({});
+    const [usuario, setUsuario] = useState<Partial<IUsuario> | null>(null);
     const [rutas, setRutas] = useState<Array<IRuta>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
     const toast = useToast();
 
     useEffect(() => {
         getUsuarioDoc();
-    }, [])
+    }, [isLoading])
 
+    useEffect(() => {
+        if (usuario) {
+            verificarUsuario();
+        }
+    }, [usuario])
+
+    const verificarUsuario = () => {
+        if (auth.currentUser?.emailVerified) {
+            const usuarioRefAuth = doc(db, 'usuarios', usuario?.idDoc as string);
+
+            updateDoc(usuarioRefAuth, {
+                verificado: true
+            }).then().catch()
+        }
+    }
 
     const getUsuarioDoc = () => {
         getDocs(qUsuario).then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                const dataUsuario: IUsuario = doc.data() as IUsuario;
+                const dataUsuario: IUsuario = { ...doc.data(), idDoc: doc.id } as IUsuario;
                 setUsuario(dataUsuario);
 
                 //Trae las rutas
@@ -80,6 +97,18 @@ export default function Perfil(props: Props) {
         });
     }
 
+    const enviarCorreoVerificacion = () => {
+        setIsSendingEmail(true);
+
+        sendEmailVerification(auth.currentUser as User).then(() => {
+            setIsSendingEmail(false);
+            toast.show({ description: "Correo de verificación enviado. Verifica tu correo y vuelva a iniciar sesión." })
+        }).catch(err => {
+            setIsSendingEmail(false);
+            toast.show({ description: "Ocurrió un error, vuelva a intentarlo." })
+        })
+    }
+
     const cerrarSesion = () => {
         signOut(auth).then(() => {
             //Sale del menú
@@ -107,21 +136,23 @@ export default function Perfil(props: Props) {
 
     return (
         <Box flex={1} bg={'white'}>
-            <ScrollView>
+            <ScrollView refreshControl={
+                <RefreshControl refreshing={isLoading} onRefresh={() => setIsLoading(true)} />
+            }>
                 <VStack my={2} p={4}>
                     <VStack mb={8}>
                         <Center>
                             <Avatar size={'xl'} mb={2} />
                             <Heading fontWeight={'light'}>
-                                {`${usuario.nombres?.trim()} ${usuario.apellidos?.trim()}`}
+                                {`${usuario?.nombres?.trim()} ${usuario?.apellidos?.trim()}`}
                             </Heading>
-                            <Text color={'gray.500'}>{auth.currentUser?.email}</Text>
-                            <HStack space={3} my={4}>
+                            <Text mb={4} color={'gray.500'}>{auth.currentUser?.email}</Text>
+                            {/* <HStack space={3} my={4}>
                                 <Button colorScheme={'lightBlue'}
                                     leftIcon={<Icon as={<AntDesign name='edit' />} />}>
                                     EDITAR PERFIL
                                 </Button>
-                            </HStack>
+                            </HStack> */}
                         </Center>
                         {
                             !auth.currentUser?.emailVerified && (
@@ -132,7 +163,7 @@ export default function Perfil(props: Props) {
                                             description={'Tu dirección de correo electrónico no ha sido verificada; presiona para verificarla. De lo contrario, si eres conductor, no aparecerás en la lista de conductores compartidos.'}
                                             status={'warning'} />
                                     </Box>
-                                    <Button colorScheme={'warning'} size={'sm'}>
+                                    <Button colorScheme={'warning'} size={'sm'} onPress={enviarCorreoVerificacion} isLoading={isSendingEmail}>
                                         VERIFICAR CORREO ELECTRÓNICO
                                     </Button>
                                 </Center>
@@ -146,18 +177,18 @@ export default function Perfil(props: Props) {
                                 <Heading size={'sm'} fontWeight={'light'}>
                                     Número telefónico
                                 </Heading>
-                                <Text color={'gray.500'}>{usuario.telefono}</Text>
+                                <Text color={'gray.500'}>{usuario?.telefono}</Text>
                             </Box>
                             <Box my={2}>
                                 <Heading size={'sm'} fontWeight={'light'}>
                                     Matrícula UTEQ
                                 </Heading>
-                                <Text color={'gray.500'}>{usuario.matricula || usuario.matricula === '' ? usuario.matricula : 'No hay matrícula'}</Text>
+                                <Text color={'gray.500'}>{usuario?.matricula || usuario?.matricula === '' ? usuario.matricula : 'No hay matrícula'}</Text>
                             </Box>
                         </Box>
                     </VStack>
                     {
-                        usuario.rol === 'conductor' && (
+                        usuario?.rol === 'conductor' && (
                             <Box mb={8}>
                                 <Heading fontWeight={'light'}>Mis rutas</Heading>
                                 <Text mb={4}>
@@ -168,9 +199,9 @@ export default function Perfil(props: Props) {
                                     variant={'solid'}
                                     leftIcon={<Icon as={<AntDesign name='plus' />} />}
                                     onPress={() => props.navigation.navigate('CrearRuta', {
-                                        nombres: usuario.nombres as string,
-                                        apellidos: usuario.apellidos as string,
-                                        telefono: usuario.telefono as string
+                                        nombres: usuario?.nombres as string,
+                                        apellidos: usuario?.apellidos as string,
+                                        telefono: usuario?.telefono as string
                                     })}>
                                     AGREGAR RUTA
                                 </Button>
@@ -190,7 +221,7 @@ export default function Perfil(props: Props) {
                                                     {value.lugarDestino.trim()}
                                                 </Text>
                                             </HStack>
-                                            <Switch defaultIsChecked={value.activo} colorScheme={'darkBlue'} onValueChange={(swt: boolean) => activarRuta(value.idDoc as string, swt)} />
+                                            <Switch isChecked={value.activo} colorScheme={'darkBlue'} onValueChange={(swt: boolean) => activarRuta(value.idDoc as string, swt)} />
                                         </Box>
                                     ))
                                 }

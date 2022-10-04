@@ -1,13 +1,15 @@
 import { AntDesign } from '@expo/vector-icons';
 import { getAuth } from 'firebase/auth';
-import { collection, DocumentData, getDocs, getFirestore, onSnapshot, Query, query, where } from 'firebase/firestore';
-import { Box, Button, Center, Heading, HStack, Icon, ScrollView, Spinner, Text, theme, VStack } from 'native-base';
+import { collection, DocumentData, getDocs, getFirestore, onSnapshot, Query, query, updateDoc, where, doc, addDoc } from 'firebase/firestore';
+import { Box, Button, Center, Heading, HStack, Icon, ScrollView, Spinner, Text, theme, useToast, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BadgeStatusRuta from '../../../components/badge_status_ruta/BadgeStatusRuta';
+import HistorialViajes from '../../../components/historial_viajes/HistorialViajes';
 import initFirebase from '../../../firebase/init';
 import IRuta from '../../../interfaces/ruta.interface';
 import IUsuario from '../../../interfaces/usuario.interface';
+import IViaje from '../../../interfaces/viaje.interface';
 
 export default function Viajes() {
     const db = getFirestore(initFirebase);
@@ -18,9 +20,12 @@ export default function Viajes() {
     const [usuario, setUsuario] = useState<IUsuario | null>(null);
 
     const [rutaActual, setRutaActual] = useState<Partial<IRuta> | null>(null);
+    const [fechaInicio, setFechaInicio] = useState<string | null>(null);
     const rutasRef = collection(db, "rutas");
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isCambiandoStatusViaje, setIsCambiandoStatusViaje] = useState<boolean>(false);
+    const toast = useToast();
 
     useEffect(() => {
         getUsuarioDoc();
@@ -69,6 +74,65 @@ export default function Viajes() {
             else
                 setRutaActual(null);
         });
+    }
+
+    const iniciarViaje = () => {
+        const rutaRefViaje = doc(db, 'rutas', rutaActual?.idDoc as string);
+        //Inicia carga
+        setIsCambiandoStatusViaje(true);
+        updateDoc(rutaRefViaje, {
+            status: 'curso'
+        }).then(() => {
+            //Guarda la fecha de inicio
+            setFechaInicio(new Date().toISOString());
+            toast.show({ description: "Ruta en curso." })
+            setIsCambiandoStatusViaje(false);
+        }).catch(err => {
+            toast.show({ description: "Ocurrió un error, vuelva a intentarlo." })
+            setIsCambiandoStatusViaje(false);
+        })
+    }
+
+    const terminarViaje = () => {
+        const rutaRefViaje = doc(db, 'rutas', rutaActual?.idDoc as string);
+        //Inicia carga
+        setIsCambiandoStatusViaje(true);
+        updateDoc(rutaRefViaje, {
+            status: 'terminado'
+        }).then(() => {
+            //Guarda el historial del viaje
+            const viaje: IViaje = {
+                fechaInicio: fechaInicio as string,
+                fechaFinal: new Date().toISOString(),
+                calificacion: null,
+                ruta: rutaActual as IRuta
+            }
+
+            addDoc(collection(db, 'viajes'), viaje).then(() => {
+                toast.show({ description: "Ruta terminada" })
+                setIsCambiandoStatusViaje(false);
+            });
+        }).catch(err => {
+            toast.show({ description: "Ocurrió un error, vuelva a intentarlo." })
+            setIsCambiandoStatusViaje(false);
+        })
+    }
+
+    const desactivarRuta = () => {
+        const rutaRefViaje = doc(db, 'rutas', rutaActual?.idDoc as string);
+        //Inicia carga
+        setIsCambiandoStatusViaje(true);
+        updateDoc(rutaRefViaje, {
+            activo: false,
+            status: 'inactiva',
+            pasajeros: []
+        }).then(() => {
+            toast.show({ description: "Ruta desactivada" })
+            setIsCambiandoStatusViaje(false);
+        }).catch(err => {
+            toast.show({ description: "Ocurrió un error, vuelva a intentarlo." })
+            setIsCambiandoStatusViaje(false);
+        })
     }
 
     if (isLoading) {
@@ -134,9 +198,20 @@ export default function Viajes() {
                                                                 </HStack>
                                                             ))
                                                         }
-                                                        <Button mt={4} colorScheme={'emerald'} size={'lg'} height={'16'} leftIcon={<Icon as={<AntDesign name='car' />} />}>
-                                                            INICIAR VIAJE
-                                                        </Button>
+                                                        {
+                                                            rutaActual.status === 'preparacion' ?
+                                                                <Button mt={4} colorScheme={'emerald'} size={'lg'} height={'16'} leftIcon={<Icon as={<AntDesign name='car' />} />} onPress={iniciarViaje} isLoading={isCambiandoStatusViaje}>
+                                                                    INICIAR VIAJE
+                                                                </Button> :
+                                                                rutaActual.status === 'curso' ?
+                                                                    <Button mt={4} colorScheme={'red'} size={'lg'} height={'16'} leftIcon={<Icon as={<AntDesign name='car' />} />} onPress={terminarViaje} isLoading={isCambiandoStatusViaje}>
+                                                                        TERMINAR VIAJE
+                                                                    </Button> :
+                                                                    rutaActual.status === 'terminado' ?
+                                                                        <Button mt={4} colorScheme={'blue'} size={'lg'} height={'16'} leftIcon={<Icon as={<AntDesign name='car' />} />} onPress={desactivarRuta} isLoading={isCambiandoStatusViaje}>
+                                                                            DESACTIVAR RUTA
+                                                                        </Button> : null
+                                                        }
                                                     </Box>
                                             }
                                         </React.Fragment>
@@ -182,6 +257,9 @@ export default function Viajes() {
                                 }
                             </VStack>
                     }
+                    <Box mt={2}>
+                        <HistorialViajes />
+                    </Box>
                 </VStack>
             </ScrollView>
         </Box>

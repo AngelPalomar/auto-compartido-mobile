@@ -33,7 +33,7 @@ export default function RutaDetalleCard(props: RutaDetalleCardProps) {
                 <Text bold>{props.ruta.pasajeros.length} / {props.lugaresDisponibles}</Text>
             </HStack>
             <Text mb={2} color={'gray.500'}>Recorrido:</Text>
-            <VStack pl={4} borderStyle={'solid'} borderLeftColor={'blue.300'} borderLeftWidth={'2'}>
+            <VStack mb={2} pl={4} borderStyle={'solid'} borderLeftColor={'blue.300'} borderLeftWidth={'2'}>
                 {
                     props.ruta.puntos.map((value: IPunto, index: number) => (
                         <HStack alignItems={'center'} mb={2} key={index}>
@@ -45,6 +45,9 @@ export default function RutaDetalleCard(props: RutaDetalleCardProps) {
                     ))
                 }
             </VStack>
+            <Text>
+                {props.ruta.descripcion}
+            </Text>
         </Box>
     )
 }

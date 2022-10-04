@@ -40,6 +40,7 @@ const RegistrarLicencia = (props: Props) => {
         nombres: params.nombres,
         rol: 'conductor',
         telefono: params.telefono,
+        verificado: false,
         vehiculo: {
             color: params.color,
             modelo: params.modelo,
