@@ -71,15 +71,14 @@ const IniciarSesion = (props: Props) => {
                             Bienvenido a Auto Compartido UTEQ
                         </Heading>
                         <Heading size={'sm'} color={'darkBlue.800'}>Iniciar sesión</Heading>
-                        <Box alignItems={'center'} mb={5}>
-                            <Stack alignItems="center" px={3} mb={3}>
+                        <Center mb={5}>
+                            <Stack alignItems="center" mb={3}>
                                 <InputGroup w={{
-                                    base: "80%",
-                                    md: "285"
+                                    base: "100%"
                                 }}>
                                     <Input w={{
-                                        base: "70%",
-                                        md: "100%"
+                                        base: "52%",
+                                        sm: "75%"
                                     }} placeholder="nombre.apellido / matrícula"
                                         variant={'rounded'}
                                         onChange={(e: input) => { setCorreoElectronico(e.nativeEvent.text) }} />
@@ -91,7 +90,7 @@ const IniciarSesion = (props: Props) => {
                             <Button colorScheme={'darkBlue'} onPress={iniciarSesion} isLoading={isLoading}>
                                 INGRESAR
                             </Button>
-                        </Box>
+                        </Center>
                         <Box alignItems={'center'}>
                             <Text>¿Buscas un auto compartido?</Text>
                             <Button

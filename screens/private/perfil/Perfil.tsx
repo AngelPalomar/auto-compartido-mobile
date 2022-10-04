@@ -71,7 +71,8 @@ export default function Perfil(props: Props) {
         const rutaRef = doc(db, 'rutas', idDoc);
 
         updateDoc(rutaRef, {
-            activo: value
+            activo: value,
+            status: value ? 'preparacion' : 'inactiva'
         }).then(() => {
             toast.show({ description: value ? "Ruta activada" : "Ruta desactivada" });
         }).catch(() => {
@@ -166,7 +167,11 @@ export default function Perfil(props: Props) {
                                     mb={4}
                                     variant={'solid'}
                                     leftIcon={<Icon as={<AntDesign name='plus' />} />}
-                                    onPress={() => props.navigation.navigate('CrearRuta')}>
+                                    onPress={() => props.navigation.navigate('CrearRuta', {
+                                        nombres: usuario.nombres as string,
+                                        apellidos: usuario.apellidos as string,
+                                        telefono: usuario.telefono as string
+                                    })}>
                                     AGREGAR RUTA
                                 </Button>
                                 {

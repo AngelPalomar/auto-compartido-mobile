@@ -4,6 +4,7 @@ import { collection, DocumentData, getDocs, getFirestore, onSnapshot, Query, que
 import { Box, Button, Center, Heading, HStack, Icon, ScrollView, Spinner, Text, theme, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BadgeStatusRuta from '../../../components/badge_status_ruta/BadgeStatusRuta';
 import initFirebase from '../../../firebase/init';
 import IRuta from '../../../interfaces/ruta.interface';
 import IUsuario from '../../../interfaces/usuario.interface';
@@ -23,13 +24,13 @@ export default function Viajes() {
 
     useEffect(() => {
         getUsuarioDoc();
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (usuario) {
             getRutaActual();
         }
-    }, [usuario])
+    }, [usuario]);
 
     const getUsuarioDoc = () => {
         getDocs(qUsuario).then(querySnapshot => {
@@ -100,9 +101,9 @@ export default function Viajes() {
                                         </React.Fragment> :
                                         <React.Fragment>
                                             <Heading fontWeight={'light'}>
-                                                Ruta activa en preparación
+                                                Ruta activa seleccionada
                                             </Heading>
-                                            <HStack mb={2} alignItems={'center'} space={2}>
+                                            <HStack mb={4} alignItems={'center'} space={2}>
                                                 <Text fontWeight={'light'}>
                                                     {rutaActual.lugarInicio?.trim()}
                                                 </Text>
@@ -111,6 +112,9 @@ export default function Viajes() {
                                                     {rutaActual.lugarDestino?.trim()}
                                                 </Text>
                                             </HStack>
+                                            <Center mb={2} rounded={'md'}>
+                                                <BadgeStatusRuta ruta={rutaActual as IRuta} />
+                                            </Center>
                                             <Text color={'darkBlue.500'} mb={2}>
                                                 Pasajeros
                                             </Text>
@@ -153,7 +157,7 @@ export default function Viajes() {
                                             <Heading fontWeight={'light'}>
                                                 Estás en una ruta
                                             </Heading>
-                                            <HStack mb={2} alignItems={'center'} space={2}>
+                                            <HStack mb={4} alignItems={'center'} space={2}>
                                                 <Text fontWeight={'light'}>
                                                     {rutaActual.lugarInicio?.trim()}
                                                 </Text>
@@ -162,9 +166,18 @@ export default function Viajes() {
                                                     {rutaActual.lugarDestino?.trim()}
                                                 </Text>
                                             </HStack>
-                                            <Text color={'darkBlue.500'}>
+                                            <Center mb={2} rounded={'md'}>
+                                                <BadgeStatusRuta ruta={rutaActual as IRuta} />
+                                            </Center>
+                                            <Text color={'darkBlue.500'} mb={2}>
                                                 Conductor
                                             </Text>
+                                            <HStack alignItems={'center'} space={3}>
+                                                <AntDesign name={'car'} size={20} color={theme.colors.blue[500]} />
+                                                <Text fontSize={'md'} color={'gray.500'}>
+                                                    {`${rutaActual.conductor?.nombres?.trim()} ${rutaActual.conductor?.apellidos?.trim()}`}
+                                                </Text>
+                                            </HStack>
                                         </React.Fragment>
                                 }
                             </VStack>

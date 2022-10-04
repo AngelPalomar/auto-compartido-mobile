@@ -32,7 +32,11 @@ type RootStackParamList = {
         idAuth: string | undefined
     },
     ConductorMenu: undefined,
-    CrearRuta: undefined,
+    CrearRuta: {
+        nombres: string,
+        apellidos: string,
+        telefono: string
+    },
     Viajes: undefined,
     Perfil: undefined
 };

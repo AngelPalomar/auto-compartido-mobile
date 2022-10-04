@@ -6,7 +6,6 @@ export default interface IViaje {
     fechaInicio: string,
     fechaFinal: string,
     ruta: IRuta,
-    estado: 'curso' | 'terminado'
     pasajeros: Partial<IUsuario>
     calificacion: 1 | 2 | 3 | 4 | 5
 }

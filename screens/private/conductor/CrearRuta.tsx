@@ -110,8 +110,14 @@ export default function CrearRuta(props: Props) {
             descripcion: ruta.descripcion,
             horaSalida: `${horaSeleccionada}:${minutoSeleccionado}`,
             idAuthConductor: auth.currentUser?.uid,
+            conductor: {
+                nombres: props.route.params.nombres,
+                apellidos: props.route.params.apellidos,
+                telefono: props.route.params.telefono
+            },
             pasajeros: [],
-            puntos: puntos
+            puntos: puntos,
+            status: 'creada'
         };
 
         //Inicia carga
