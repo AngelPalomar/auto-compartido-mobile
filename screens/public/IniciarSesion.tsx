@@ -67,9 +67,14 @@ const IniciarSesion = (props: Props) => {
                         }}
                     />
                     <VStack space={5} alignItems="center">
-                        <Heading textAlign={'center'}>
-                            Bienvenido a Auto Compartido UTEQ
-                        </Heading>
+                        <VStack alignItems={'center'}>
+                            <Heading textAlign={'center'} fontWeight={'light'}>
+                                Bienvenido a
+                            </Heading>
+                            <Heading fontWeight={'normal'} size={'2xl'}>
+                                <Text color={'cyan.500'}>A</Text><Text color={'darkBlue.800'}>UTEQ</Text>
+                            </Heading>
+                        </VStack>
                         <Heading size={'sm'} color={'darkBlue.800'}>Iniciar sesión</Heading>
                         <Center mb={5}>
                             <Stack alignItems="center" mb={3}>
@@ -114,6 +119,7 @@ const IniciarSesion = (props: Props) => {
             </ScrollView>
             <Text color={'gray.400'} fontSize={'xs'} textAlign={'center'} bottom={'0'}>
                 Versión {pjson.version} {'\n'}
+                Universidad Tecnológica de Querétaro. {'\n'}
                 Todos los derechos reservados
             </Text>
         </Box>
