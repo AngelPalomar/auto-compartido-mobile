@@ -57,7 +57,7 @@ const Inicio = () => {
             {
                 usuario.rol === 'conductor' ?
                     <Tab.Screen name='ConductorMenu' component={ConductorMenu} options={{
-                        title: 'Menú',
+                        title: 'Solicitudes',
                         headerStyle: {
                             backgroundColor: theme.colors.darkBlue[800]
                         },
@@ -70,7 +70,7 @@ const Inicio = () => {
                     }} />
                     : usuario.rol === 'pasajero' ?
                         <Tab.Screen name='PasajeroMenu' component={PasajeroMenu} options={{
-                            title: 'Menú',
+                            title: 'Conductores',
                             headerStyle: {
                                 backgroundColor: theme.colors.darkBlue[800]
                             },

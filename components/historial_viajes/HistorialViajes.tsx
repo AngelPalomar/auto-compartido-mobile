@@ -60,7 +60,7 @@ export default function HistorialViajes() {
             });
 
             if (vjs.length > 0) {
-                setViajes(vjs.reverse());
+                setViajes(vjs);
                 setIsLoading(false);
             } else {
                 setViajes(null);

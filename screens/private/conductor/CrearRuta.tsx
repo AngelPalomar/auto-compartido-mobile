@@ -63,6 +63,22 @@ export default function CrearRuta(props: Props) {
     }, []);
 
     const anadirPunto = () => {
+        //Validaciones
+        if (!minLenghtValidation(lugar as string, 1)) {
+            toast.show({ description: "Ingrese un lugar" });
+            return;
+        }
+
+        if (!minLenghtValidation(costo as string, 1)) {
+            toast.show({ description: "Ingrese un costo" });
+            return;
+        }
+
+        if (parseFloat(costo) < 0) {
+            toast.show({ description: "Ingrese un costo mayor a 0" });
+            return;
+        }
+
         setPuntos(oldPuntos => [...oldPuntos, {
             lugar: lugar,
             costo: costo as unknown as number

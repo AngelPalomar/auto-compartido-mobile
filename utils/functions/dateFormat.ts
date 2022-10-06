@@ -6,7 +6,7 @@ export function es_DateName(date: Date) {
     const hour = dateToFormat.getHours()
     const minute = dateToFormat.getMinutes()
 
-    return `${day} ${esMonth(month)}, ${year} a las ${hour}:${minute}`
+    return `${day} ${esMonth(month)}, ${year} a las ${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}`
 }
 
 function esMonth(numberMonth: number) {

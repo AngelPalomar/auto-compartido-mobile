@@ -125,7 +125,7 @@ export default function VerConductor(props: Props) {
                                 Teléfono: {conductor.telefono}
                             </Text>
                         </Center>
-                        <Button mb={2} colorScheme={'lightBlue'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
+                        <Button isDisabled={!rutaActual ? true : false} mb={2} colorScheme={'lightBlue'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
                             SOLICITAR VIAJE
                         </Button>
                         <Button mb={4} colorScheme={'lightBlue'} variant={'link'}>
