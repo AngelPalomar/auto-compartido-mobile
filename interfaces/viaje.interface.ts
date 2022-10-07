@@ -6,5 +6,8 @@ export default interface IViaje {
     fechaInicio: string,
     fechaFinal: string,
     ruta: IRuta,
-    calificacion: null | 1 | 2 | 3 | 4 | 5
+    calificacionesPasajeros: {
+        idAuth: string,
+        calificacion: null | 1 | 2 | 3 | 4 | 5
+    }[]
 }

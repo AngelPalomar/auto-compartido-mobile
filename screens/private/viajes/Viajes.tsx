@@ -101,10 +101,19 @@ export default function Viajes() {
             status: 'terminado'
         }).then(() => {
             //Guarda el historial del viaje
+            const calfs: {
+                idAuth: string,
+                calificacion: null | 1 | 2 | 3 | 4 | 5
+            }[] = [];
+
+            rutaActual?.pasajeros?.forEach((v: Partial<IUsuario>) => {
+                calfs.push({ idAuth: v.idAuth as string, calificacion: null });
+            });
+
             const viaje: IViaje = {
                 fechaInicio: fechaInicio as string,
                 fechaFinal: new Date().toISOString(),
-                calificacion: null,
+                calificacionesPasajeros: calfs,
                 ruta: rutaActual as IRuta
             }
 

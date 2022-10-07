@@ -86,49 +86,57 @@ export default function HistorialViajes() {
             </Heading>
             <Box>
                 {
-                    viajes?.map((value: IViaje, index: number) => (
-                        <VStack key={index} mb={2} bg={'gray.100'} p={2} rounded={'sm'}>
-                            <VStack>
-                                <HStack alignItems={'center'} space={2}>
-                                    <Text fontSize={'lg'}>{value.ruta.lugarInicio}</Text>
-                                    <AntDesign name={'arrowright'} size={20} color={theme.colors.blue[500]} />
-                                    <Text fontSize={'lg'}>{value.ruta.lugarDestino}</Text>
-                                </HStack>
-                                <VStack>
-                                    {
-                                        usuario?.rol === 'pasajero' && (
-                                            <HStack alignItems={'center'} mb={1}>
-                                                <AntDesign name={'car'} size={12} color={theme.colors.gray[500]} />
-                                                <Text fontSize={'xs'} ml={1}>Conductor: </Text>
-                                                <Text fontSize={'xs'} bold>{`${value.ruta.conductor.nombres?.trim()} ${value.ruta.conductor.apellidos?.trim()}`}</Text>
-                                            </HStack>
-                                        )
-                                    }
-                                    <HStack alignItems={'center'}>
-                                        <AntDesign name={'clockcircle'} size={12} color={theme.colors.gray[500]} />
-                                        <Text fontSize={'xs'} ml={1}>Fecha y hora de inicio: </Text>
-                                        <Text fontSize={'xs'} bold>{es_DateName(new Date(value.fechaInicio))}</Text>
-                                    </HStack>
-                                    <HStack alignItems={'center'}>
-                                        <AntDesign name={'clockcircle'} size={12} color={theme.colors.gray[500]} />
-                                        <Text fontSize={'xs'} ml={1}>Fecha y hora de llegada: </Text>
-                                        <Text fontSize={'xs'} bold>{es_DateName(new Date(value.fechaFinal))}</Text>
-                                    </HStack>
-                                </VStack>
-                            </VStack>
+                    viajes?.length === 0 ?
+                        <React.Fragment>
+                            <Text color={'gray.500'}>No hay viajes</Text>
+                        </React.Fragment> :
+                        <React.Fragment>
                             {
-                                usuario?.rol === 'pasajero' && (
-                                    <HStack justifyContent={'center'}>
-                                        <IconButton icon={<Icon as={AntDesign} name="star" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                        <IconButton icon={<Icon as={AntDesign} name="star" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                        <IconButton icon={<Icon as={AntDesign} name="star" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                        <IconButton icon={<Icon as={AntDesign} name="star" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                        <IconButton icon={<Icon as={AntDesign} name="star" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                    </HStack>
-                                )
+                                viajes?.map((value: IViaje, index: number) => (
+                                    <VStack key={index} mb={2} bg={'gray.100'} p={2} rounded={'sm'}>
+                                        <VStack>
+                                            <HStack alignItems={'center'} space={2}>
+                                                <Text fontSize={'lg'}>{value.ruta.lugarInicio}</Text>
+                                                <AntDesign name={'arrowright'} size={20} color={theme.colors.blue[500]} />
+                                                <Text fontSize={'lg'}>{value.ruta.lugarDestino}</Text>
+                                            </HStack>
+                                            <VStack>
+                                                {
+                                                    usuario?.rol === 'pasajero' && (
+                                                        <HStack alignItems={'center'} mb={1}>
+                                                            <AntDesign name={'car'} size={12} color={theme.colors.gray[500]} />
+                                                            <Text fontSize={'xs'} ml={1}>Conductor: </Text>
+                                                            <Text fontSize={'xs'} bold>{`${value.ruta.conductor.nombres?.trim()} ${value.ruta.conductor.apellidos?.trim()}`}</Text>
+                                                        </HStack>
+                                                    )
+                                                }
+                                                <HStack alignItems={'center'}>
+                                                    <AntDesign name={'clockcircle'} size={12} color={theme.colors.gray[500]} />
+                                                    <Text fontSize={'xs'} ml={1}>Fecha y hora de inicio: </Text>
+                                                    <Text fontSize={'xs'} bold>{es_DateName(new Date(value.fechaInicio))}</Text>
+                                                </HStack>
+                                                <HStack alignItems={'center'}>
+                                                    <AntDesign name={'clockcircle'} size={12} color={theme.colors.gray[500]} />
+                                                    <Text fontSize={'xs'} ml={1}>Fecha y hora de llegada: </Text>
+                                                    <Text fontSize={'xs'} bold>{es_DateName(new Date(value.fechaFinal))}</Text>
+                                                </HStack>
+                                            </VStack>
+                                        </VStack>
+                                        {
+                                            usuario?.rol === 'pasajero' && (
+                                                <HStack justifyContent={'center'}>
+                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
+                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
+                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
+                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
+                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
+                                                </HStack>
+                                            )
+                                        }
+                                    </VStack>
+                                ))
                             }
-                        </VStack>
-                    ))
+                        </React.Fragment>
                 }
             </Box>
         </Box>
