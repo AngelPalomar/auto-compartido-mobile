@@ -6,6 +6,7 @@ import initFirebase from '../../firebase/init';
 import IUsuario from '../../interfaces/usuario.interface';
 import IViaje from '../../interfaces/viaje.interface';
 import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { es_DateName } from '../../utils/functions/dateFormat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -125,11 +126,11 @@ export default function HistorialViajes() {
                                         {
                                             usuario?.rol === 'pasajero' && (
                                                 <HStack justifyContent={'center'}>
-                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
-                                                    <IconButton icon={<Icon as={AntDesign} name="staro" color={'yellow.500'} />} _hover={{ bg: "yellow.600:alpha20" }} />
+                                                    <IconButton icon={<Icon as={MaterialIcons} name="sentiment-very-dissatisfied" color={'gray.500'} />} />
+                                                    <IconButton icon={<Icon as={MaterialIcons} name="sentiment-dissatisfied" color={'gray.500'} />} />
+                                                    <IconButton icon={<Icon as={MaterialIcons} name="sentiment-satisfied" color={'gray.500'} />} />
+                                                    <IconButton icon={<Icon as={MaterialIcons} name="sentiment-satisfied-alt" color={'gray.500'} />} />
+                                                    <IconButton icon={<Icon as={MaterialIcons} name="sentiment-very-satisfied" color={'gray.500'} />} />
                                                 </HStack>
                                             )
                                         }

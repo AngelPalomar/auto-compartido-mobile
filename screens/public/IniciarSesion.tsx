@@ -116,12 +116,12 @@ const IniciarSesion = (props: Props) => {
                         </Box>
                     </VStack>
                 </Center>
+                <Text mt={16} color={'gray.400'} fontSize={'xs'} textAlign={'center'} bottom={'0'}>
+                    Versión {pjson.version} {'\n'}
+                    Universidad Tecnológica de Querétaro. {'\n'}
+                    Todos los derechos reservados
+                </Text>
             </ScrollView>
-            <Text color={'gray.400'} fontSize={'xs'} textAlign={'center'} bottom={'0'}>
-                Versión {pjson.version} {'\n'}
-                Universidad Tecnológica de Querétaro. {'\n'}
-                Todos los derechos reservados
-            </Text>
         </Box>
     )
 }
