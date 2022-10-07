@@ -1,12 +1,14 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import {
     Avatar, Box, Button, Center, Heading, ScrollView, Spinner, Stack, Text, useToast, VStack
 } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
 import Alerta from '../../../components/alerta/Alerta';
+import ModalLicencia from '../../../components/modal_licencia/ModalLicencia';
 import RutaDetalleCard from '../../../components/ruta_detalle_card/RutaDetalleCard';
 import initFirebase from '../../../firebase/init';
 import IRuta from '../../../interfaces/ruta.interface';
@@ -19,6 +21,7 @@ export default function VerConductor(props: Props) {
     const { params } = props.route;
     const db = getFirestore(initFirebase);
     const auth = getAuth(initFirebase);
+    const storage = getStorage(initFirebase);
     const docRef = doc(db, "usuarios", params.idDoc as string);
     const [conductor, setConductor] = useState<Partial<IUsuario>>({});
 
@@ -30,8 +33,11 @@ export default function VerConductor(props: Props) {
     const rutasRef = collection(db, "rutas");
     const qRutaActual = query(rutasRef, where("activo", "==", true), where("idAuthConductor", "==", params.idAuth));
 
+    const [urlLicencia, setUrlLicencia] = useState<string>("");
+
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isRequesting, setIsRequesting] = useState<boolean>(false);
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
     const toast = useToast();
 
     useEffect(() => {
@@ -39,11 +45,18 @@ export default function VerConductor(props: Props) {
         getRutaActual();
     }, []);
 
+    useEffect(() => {
+        if (conductor.fotoLicencia) {
+            getFotoLicencia();
+        }
+    }, [conductor])
+
     const getConductorDoc = () => {
         const docSnap = getDoc(docRef);
         docSnap.then(doc => {
             if (doc.exists()) {
-                setConductor(doc.data());
+                let c: IUsuario = doc.data() as IUsuario;
+                setConductor(c);
 
                 //Obtiene el pasajero
                 getDocs(q).then(querySnapshot => {
@@ -77,6 +90,13 @@ export default function VerConductor(props: Props) {
                     setRutaActual(null);
             });
         }
+    }
+
+    const getFotoLicencia = () => {
+        const gsReference = ref(storage, conductor.fotoLicencia as string);
+        getDownloadURL(gsReference).then((url) => {
+            setUrlLicencia(url);
+        })
     }
 
     const solicitarViaje = () => {
@@ -114,6 +134,7 @@ export default function VerConductor(props: Props) {
     return (
         <Box flex={1} bg={'white'}>
             <ScrollView>
+                <ModalLicencia isOpen={modalVisible} onClose={() => setModalVisible(false)} urlFoto={urlLicencia} />
                 <VStack my={4} px={4}>
                     <Center>
                         <Center mb={5}>
@@ -125,10 +146,10 @@ export default function VerConductor(props: Props) {
                                 Teléfono: {conductor.telefono}
                             </Text>
                         </Center>
-                        <Button isDisabled={!rutaActual ? true : false} mb={2} colorScheme={'lightBlue'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
+                        <Button isDisabled={!rutaActual || !auth.currentUser?.emailVerified ? true : false} mb={2} colorScheme={'lightBlue'} width={'48'} onPress={solicitarViaje} isLoading={isRequesting}>
                             SOLICITAR VIAJE
                         </Button>
-                        <Button mb={4} colorScheme={'lightBlue'} variant={'link'}>
+                        <Button onPress={() => setModalVisible(true)} mb={4} colorScheme={'lightBlue'} variant={'link'}>
                             Ver licencia
                         </Button>
                         <Box mb={5}>
