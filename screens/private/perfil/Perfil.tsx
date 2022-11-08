@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
     Avatar, Box, Center, ScrollView, VStack, Heading, Spinner, Button, Text,
     useToast, useColorMode, HStack, Switch, Icon, theme
@@ -16,59 +16,40 @@ import { AntDesign } from '@expo/vector-icons';
 import IRuta from '../../../interfaces/ruta.interface';
 import Alerta from '../../../components/alerta/Alerta';
 import { RefreshControl } from 'react-native';
+import { UsuarioDocContext } from '../../../hooks/useUsuarioDocContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Perfil'>;
 
 export default function Perfil(props: Props) {
+    const usuario = useContext(UsuarioDocContext);
+
     const db = getFirestore(initFirebase);
     const auth = getAuth(initFirebase);
-    const usuariosRef = collection(db, "usuarios");
     const rutasRef = collection(db, 'rutas');
-    const qUsuario = query(usuariosRef, where("idAuth", "==", auth.currentUser?.uid));
-    const qRuta = query(rutasRef, where("idAuthConductor", "==", auth.currentUser?.uid));
-    const [usuario, setUsuario] = useState<Partial<IUsuario> | null>(null);
+    const qRuta = query(rutasRef, where("idAuthConductor", "==", usuario.idAuth));
     const [rutas, setRutas] = useState<Array<IRuta>>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
     const toast = useToast();
 
     useEffect(() => {
-        getUsuarioDoc();
-    }, [isLoading])
-
-    useEffect(() => {
-        if (usuario) {
-            verificarUsuario();
+        if (usuario.rol === 'conductor') {
+            getRutasDocs();
+        } else {
+            setIsLoading(false);
         }
-    }, [usuario])
+
+        verificarUsuario();
+    }, [isLoading])
 
     const verificarUsuario = () => {
         if (auth.currentUser?.emailVerified) {
-            const usuarioRefAuth = doc(db, 'usuarios', usuario?.idDoc as string);
+            const usuarioRefAuth = doc(db, 'usuarios', usuario.idDoc as string);
 
             updateDoc(usuarioRefAuth, {
                 verificado: true
             }).then().catch()
         }
-    }
-
-    const getUsuarioDoc = () => {
-        getDocs(qUsuario).then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                const dataUsuario: IUsuario = { ...doc.data(), idDoc: doc.id } as IUsuario;
-                setUsuario(dataUsuario);
-
-                //Trae las rutas
-                if (dataUsuario.rol === 'conductor') {
-                    getRutasDocs();
-                } else {
-                    setIsLoading(false);
-                }
-            })
-        }).catch(err => {
-            console.error(err);
-            setIsLoading(false);
-        })
     }
 
     const getRutasDocs = () => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode, useContext } from 'react';
 import { Icon, theme } from 'native-base';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Center, Spinner } from 'native-base';
@@ -15,6 +15,7 @@ import ConductorMenu from '../conductor/ConductorMenu';
 import Viajes from '../viajes/Viajes';
 
 import { AntDesign } from '@expo/vector-icons';
+import { UsuarioDocContext } from '../../../hooks/useUsuarioDocContext';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -33,7 +34,7 @@ const Inicio = () => {
     const getUsuarioDoc = () => {
         getDocs(q).then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                setUsuario(doc.data() as IUsuario);
+                setUsuario({ ...doc.data(), idDoc: doc.id } as IUsuario);
                 setIsLoading(false);
             })
         }).catch(err => {
@@ -53,24 +54,12 @@ const Inicio = () => {
     }
 
     return (
-        <Tab.Navigator>
-            {
-                usuario.rol === 'conductor' ?
-                    <Tab.Screen name='ConductorMenu' component={ConductorMenu} options={{
-                        title: 'Solicitudes',
-                        headerStyle: {
-                            backgroundColor: theme.colors.darkBlue[800]
-                        },
-                        headerTintColor: '#FFFFFF',
-                        tabBarIcon: (props): ReactNode => (
-                            <AntDesign name='home' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
-                        ),
-                        tabBarActiveTintColor: theme.colors.lightBlue[500],
-                        tabBarInactiveTintColor: theme.colors.gray[500],
-                    }} />
-                    : usuario.rol === 'pasajero' ?
-                        <Tab.Screen name='PasajeroMenu' component={PasajeroMenu} options={{
-                            title: 'Conductores',
+        <UsuarioDocContext.Provider value={usuario}>
+            <Tab.Navigator>
+                {
+                    usuario.rol === 'conductor' ?
+                        <Tab.Screen name='ConductorMenu' component={ConductorMenu} options={{
+                            title: 'Solicitudes',
                             headerStyle: {
                                 backgroundColor: theme.colors.darkBlue[800]
                             },
@@ -80,33 +69,47 @@ const Inicio = () => {
                             ),
                             tabBarActiveTintColor: theme.colors.lightBlue[500],
                             tabBarInactiveTintColor: theme.colors.gray[500],
-                        }} /> : null
-            }
-            <Tab.Screen name='Viajes' component={Viajes} options={{
-                title: 'Mis viajes',
-                headerStyle: {
-                    backgroundColor: theme.colors.darkBlue[800]
-                },
-                headerTintColor: '#FFFFFF',
-                tabBarIcon: (props): ReactNode => (
-                    <AntDesign name='car' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
-                ),
-                tabBarActiveTintColor: theme.colors.lightBlue[500],
-                tabBarInactiveTintColor: theme.colors.gray[500],
-            }} />
-            <Tab.Screen name='Perfil' component={Perfil} options={{
-                title: 'Mi perfil',
-                headerStyle: {
-                    backgroundColor: theme.colors.darkBlue[800]
-                },
-                headerTintColor: '#FFFFFF',
-                tabBarIcon: (props): ReactNode => (
-                    <AntDesign name='user' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
-                ),
-                tabBarActiveTintColor: theme.colors.lightBlue[500],
-                tabBarInactiveTintColor: theme.colors.gray[500],
-            }} />
-        </Tab.Navigator>
+                        }} />
+                        : usuario.rol === 'pasajero' ?
+                            <Tab.Screen name='PasajeroMenu' component={PasajeroMenu} options={{
+                                title: 'Conductores',
+                                headerStyle: {
+                                    backgroundColor: theme.colors.darkBlue[800]
+                                },
+                                headerTintColor: '#FFFFFF',
+                                tabBarIcon: (props): ReactNode => (
+                                    <AntDesign name='home' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
+                                ),
+                                tabBarActiveTintColor: theme.colors.lightBlue[500],
+                                tabBarInactiveTintColor: theme.colors.gray[500],
+                            }} /> : null
+                }
+                <Tab.Screen name='Viajes' component={Viajes} options={{
+                    title: 'Mis viajes',
+                    headerStyle: {
+                        backgroundColor: theme.colors.darkBlue[800]
+                    },
+                    headerTintColor: '#FFFFFF',
+                    tabBarIcon: (props): ReactNode => (
+                        <AntDesign name='car' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
+                    ),
+                    tabBarActiveTintColor: theme.colors.lightBlue[500],
+                    tabBarInactiveTintColor: theme.colors.gray[500],
+                }} />
+                <Tab.Screen name='Perfil' component={Perfil} options={{
+                    title: 'Mi perfil',
+                    headerStyle: {
+                        backgroundColor: theme.colors.darkBlue[800]
+                    },
+                    headerTintColor: '#FFFFFF',
+                    tabBarIcon: (props): ReactNode => (
+                        <AntDesign name='user' size={24} color={props.focused ? theme.colors.lightBlue[500] : theme.colors.gray[500]} />
+                    ),
+                    tabBarActiveTintColor: theme.colors.lightBlue[500],
+                    tabBarInactiveTintColor: theme.colors.gray[500],
+                }} />
+            </Tab.Navigator>
+        </UsuarioDocContext.Provider>
     )
 }
 

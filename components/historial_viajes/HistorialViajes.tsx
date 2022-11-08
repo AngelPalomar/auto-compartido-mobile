@@ -1,7 +1,7 @@
 import { getAuth } from 'firebase/auth';
 import { collection, DocumentData, getDocs, getFirestore, onSnapshot, Query, query, where } from 'firebase/firestore'
 import { Box, Heading, HStack, VStack, Text, theme, IconButton, Icon, Center, Spinner } from 'native-base'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import initFirebase from '../../firebase/init';
 import IUsuario from '../../interfaces/usuario.interface';
 import IViaje from '../../interfaces/viaje.interface';
@@ -9,35 +9,22 @@ import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { es_DateName } from '../../utils/functions/dateFormat';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { UsuarioDocContext } from '../../hooks/useUsuarioDocContext';
 
 export default function HistorialViajes() {
+    const usuario = useContext(UsuarioDocContext);
+
     const db = getFirestore(initFirebase);
     const auth = getAuth(initFirebase);
     const usuariosRef = collection(db, 'usuarios');
-    const [usuario, setUsuario] = useState<IUsuario | null>(null);
 
     const viajesRef = collection(db, 'viajes');
     const [viajes, setViajes] = useState<IViaje[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        getUsuarioDoc();
+        getViajesDocs(usuario as IUsuario);
     }, [])
-
-
-    const getUsuarioDoc = () => {
-        const qUsuario = query(usuariosRef, where("idAuth", "==", auth.currentUser?.uid));
-        getDocs(qUsuario).then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                const dataUsuario: IUsuario = doc.data() as IUsuario;
-                setUsuario(dataUsuario);
-                getViajesDocs(dataUsuario);
-            })
-        }).catch(err => {
-            console.error(err);
-            setIsLoading(false);
-        })
-    }
 
     const getViajesDocs = (usuarioData: IUsuario) => {
         let qViajes: Query<DocumentData> | null = null;

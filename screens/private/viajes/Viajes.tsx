@@ -2,22 +2,23 @@ import { AntDesign } from '@expo/vector-icons';
 import { getAuth } from 'firebase/auth';
 import { collection, DocumentData, getDocs, getFirestore, onSnapshot, Query, query, updateDoc, where, doc, addDoc } from 'firebase/firestore';
 import { Box, Button, Center, Heading, HStack, Icon, ScrollView, Spinner, Text, theme, useToast, VStack } from 'native-base';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BadgeStatusRuta from '../../../components/badge_status_ruta/BadgeStatusRuta';
 import HistorialViajes from '../../../components/historial_viajes/HistorialViajes';
 import initFirebase from '../../../firebase/init';
+import { UsuarioDocContext } from '../../../hooks/useUsuarioDocContext';
 import IRuta from '../../../interfaces/ruta.interface';
 import IUsuario from '../../../interfaces/usuario.interface';
 import IViaje from '../../../interfaces/viaje.interface';
 
 export default function Viajes() {
+    const usuario = useContext(UsuarioDocContext);
+
     const db = getFirestore(initFirebase);
     const auth = getAuth(initFirebase);
 
     const usuariosRef = collection(db, 'usuarios');
-    const qUsuario = query(usuariosRef, where("idAuth", "==", auth.currentUser?.uid));
-    const [usuario, setUsuario] = useState<IUsuario | null>(null);
 
     const [rutaActual, setRutaActual] = useState<Partial<IRuta> | null>(null);
     const [fechaInicio, setFechaInicio] = useState<string | null>(null);
@@ -28,38 +29,20 @@ export default function Viajes() {
     const toast = useToast();
 
     useEffect(() => {
-        getUsuarioDoc();
-    }, []);
-
-    useEffect(() => {
-        if (usuario) {
-            getRutaActual();
-        }
-    }, [usuario]);
-
-    const getUsuarioDoc = () => {
-        getDocs(qUsuario).then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                setUsuario(doc.data() as IUsuario);
-                setIsLoading(false);
-            })
-        }).catch(err => {
-            console.error(err);
-            setIsLoading(false);
-        })
-    }
+        getRutaActual();
+    }, [isLoading]);
 
     const getRutaActual = () => {
         let qRutaActual: Query<DocumentData> | null = null;
 
-        if (usuario?.rol === 'conductor') {
-            qRutaActual = query(rutasRef, where("activo", "==", true), where("idAuthConductor", "==", auth.currentUser?.uid));
+        if (usuario.rol === 'conductor') {
+            qRutaActual = query(rutasRef, where("activo", "==", true), where("idAuthConductor", "==", usuario.idAuth));
         } else {
             qRutaActual = query(rutasRef, where("activo", "==", true), where("pasajeros", "array-contains", {
-                nombres: usuario?.nombres,
-                apellidos: usuario?.apellidos,
-                idAuth: auth.currentUser?.uid,
-                telefono: usuario?.telefono
+                nombres: usuario.nombres,
+                apellidos: usuario.apellidos,
+                idAuth: usuario.idAuth,
+                telefono: usuario.telefono
             }));
         }
 
@@ -69,10 +52,13 @@ export default function Viajes() {
                 rts.push({ ...doc.data(), idDoc: doc.id } as IRuta);
             })
 
-            if (rts.length > 0)
+            if (rts.length > 0) {
                 setRutaActual(rts[0]);
-            else
+                setIsLoading(false);
+            } else {
                 setRutaActual(null);
+                setIsLoading(false);
+            }
         });
     }
 
