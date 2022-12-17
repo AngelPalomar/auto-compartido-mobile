@@ -2,14 +2,13 @@ import { AntDesign } from '@expo/vector-icons';
 import { Avatar, Box, HStack, Text, theme, VStack } from 'native-base';
 import React from 'react';
 import IRuta from '../../interfaces/ruta.interface';
-import IUsuario from '../../interfaces/usuario.interface';
+import IUsuario, { IRutaUsuarioInfo } from '../../interfaces/usuario.interface';
 
 interface ConductorCardProps {
-    conductor: IUsuario,
-    ruta: IRuta | null
+    conductor: IUsuario
 }
 
-export default function ConductorCard({ conductor, ruta }: ConductorCardProps) {
+export default function ConductorCard({ conductor }: ConductorCardProps) {
     return (
         <HStack>
             <Box mr={4}>
@@ -24,13 +23,13 @@ export default function ConductorCard({ conductor, ruta }: ConductorCardProps) {
                         {conductor.vehiculo?.modelo}
                     </Text>
                     <HStack space={2} alignItems={'center'}>
-                        <Text color={'gray.500'}>{`[${ruta?.horaSalida}]`}</Text>
+                        <Text color={'gray.500'}>{`[${conductor.rutaInfo?.hora}]`}</Text>
                         <Text fontWeight={'light'}>
-                            {ruta?.lugarInicio.trim()}
+                            {conductor.rutaInfo?.lugarInicio.trim()}
                         </Text>
                         <AntDesign name={'arrowright'} color={theme.colors.blue[500]} size={20} />
                         <Text fontWeight={'light'}>
-                            {ruta?.lugarDestino.trim()}
+                            {conductor.rutaInfo?.lugarDestino.trim()}
                         </Text>
                     </HStack>
                 </VStack>

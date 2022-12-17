@@ -8,8 +8,8 @@ export default interface IRuta {
     horaSalida: string,
     idAuthConductor: string,
     conductor: Partial<IUsuario>,
-    lugarDestino: string,
     lugarInicio: string,
+    lugarDestino: string,
     pasajeros: Partial<IUsuario>[],
     puntos: Array<IPunto>,
     status: 'creada' | 'inactiva' | 'preparacion' | 'curso' | 'terminado'

@@ -1,9 +1,3 @@
-# NativeBase TypeScript Expo Template
+# AUTEQ: Auto Compartido
 
-The official NativeBase TypeScript template for [Expo](https://docs.expo.io/)
-
-## Usage
-
-```sh
-expo init my-app --template @native-base/expo-template-typescript
-```
+Aplicación móvil para la Incubadora de Empresas de la Universidad Tecnológica de Querétaro

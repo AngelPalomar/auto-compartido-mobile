@@ -1,29 +1,34 @@
 {
   "name": "auto-compartido-mobile",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "node_modules/expo/AppEntry.js",
   "keywords": [
     "react",
     "expo",
     "template",
     "typescript",
-    "nativebase"
+    "nativebase",
+    "uteq",
+    "incubadoradeempresasuteq"
   ],
   "license": "MIT",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "start": "npx expo start",
+    "android": "npx expo run:android",
+    "ios": "npx expo run:ios",
+    "web": "npx expo run:web",
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo/webpack-config": "^0.17.3",
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/drawer": "^6.4.3",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
-    "expo": "^47.0.0",
+    "expo": "^47.0.8",
+    "expo-image-picker": "~14.0.2",
     "expo-status-bar": "~1.4.2",
+    "expo-updates": "~0.15.6",
     "firebase": "9.6.11",
     "native-base": "3.4.0",
     "react": "18.1.0",
@@ -32,9 +37,7 @@
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
     "react-native-svg": "13.4.0",
-    "react-native-web": "~0.18.7",
-    "expo-image-picker": "~14.0.2",
-    "expo-updates": "~0.15.6"
+    "react-native-web": "~0.18.7"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
@@ -42,10 +45,14 @@
     "@types/react-native": "~0.70.6",
     "typescript": "^4.6.3"
   },
-  "bugs": {
-    "url": "https://github.com/GeekyAnts/nativebase-templates/issues"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AngelPalomar/auto-compartido-mobile"
   },
-  "homepage": "https://github.com/GeekyAnts/nativebase-templates#readme",
-  "author": "Aditya Jamuar",
+  "bugs": {
+    "url": "https://github.com/AngelPalomar/auto-compartido-mobile/issues"
+  },
+  "homepage": "https://www.uteq.edu.mx/",
+  "author": "Angel Palomar",
   "private": true
 }

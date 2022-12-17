@@ -9,7 +9,7 @@ import {
 } from 'firebase/firestore';
 import { getAuth, sendEmailVerification, signOut, User } from 'firebase/auth';
 import initFirebase from '../../../firebase/init';
-import IUsuario from '../../../interfaces/usuario.interface';
+import IUsuario, { IRutaUsuarioInfo } from '../../../interfaces/usuario.interface';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AntDesign } from '@expo/vector-icons';
@@ -32,6 +32,9 @@ export default function Perfil(props: Props) {
     const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
     const toast = useToast();
 
+    //Refs
+    const usuarioRef = doc(db, 'usuarios', usuario.idDoc as string);
+
     useEffect(() => {
         if (usuario.rol === 'conductor') {
             getRutasDocs();
@@ -44,9 +47,8 @@ export default function Perfil(props: Props) {
 
     const verificarUsuario = () => {
         if (auth.currentUser?.emailVerified) {
-            const usuarioRefAuth = doc(db, 'usuarios', usuario.idDoc as string);
 
-            updateDoc(usuarioRefAuth, {
+            updateDoc(usuarioRef, {
                 verificado: true
             }).then().catch()
         }
@@ -65,14 +67,27 @@ export default function Perfil(props: Props) {
         })
     }
 
-    const activarRuta = (idDoc: string, value: boolean) => {
+    /**
+     * Función para cambiar el estado de la ruta y del usuario
+     * @param idDoc 
+     * @param value 
+     * @param rutaInfo
+     */
+    const activarDesactivarRuta = (idDoc: string, value: boolean, rutaInfo: IRutaUsuarioInfo) => {
         const rutaRef = doc(db, 'rutas', idDoc);
 
+        //Actualiza la ruta
         updateDoc(rutaRef, {
             activo: value,
             status: value ? 'preparacion' : 'inactiva'
         }).then(() => {
-            toast.show({ description: value ? "Ruta activada" : "Ruta desactivada" });
+            //Cambia el estado en el usuario
+            updateDoc(usuarioRef, {
+                rutaActiva: value,
+                rutaInfo: value ? rutaInfo : null
+            }).then(() => {
+                toast.show({ description: value ? "Ruta activada" : "Ruta desactivada" });
+            });
         }).catch(() => {
             toast.show({ description: "Ocurrió un error." });
         });
@@ -202,7 +217,11 @@ export default function Perfil(props: Props) {
                                                     {value.lugarDestino.trim()}
                                                 </Text>
                                             </HStack>
-                                            <Switch isChecked={value.activo} colorScheme={'darkBlue'} onValueChange={(swt: boolean) => activarRuta(value.idDoc as string, swt)} />
+                                            <Switch isChecked={value.activo} colorScheme={'darkBlue'} onValueChange={(swt: boolean) => activarDesactivarRuta(value.idDoc as string, swt, {
+                                                hora: value.horaSalida,
+                                                lugarInicio: value.lugarInicio.trim(),
+                                                lugarDestino: value.lugarDestino.trim()
+                                            })} />
                                         </Box>
                                     ))
                                 }
